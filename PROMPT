@@ -1,0 +1,339 @@
+You are a senior research engineer specializing in Graph Neural Networks, adversarial machine learning, and experimental ML systems.
+
+Your task is to implement a FULL-SCALE, RESEARCH-GRADE project exactly based on the following specification.
+
+---
+
+🔴 PROJECT TITLE
+
+Adversarial Attacks and Structural Defense in Graph Neural Networks for Node Classification
+
+---
+
+🔴 CORE GOAL
+
+Build a COMPLETE end-to-end system that:
+
+1. Implements a 2-layer GCN model for node classification
+2. Uses both static and dynamic graph datasets
+3. Applies 6 adversarial attacks (3 poisoning + 3 evasion)
+4. Measures attack impact using multiple metrics
+5. Implements a structural defense pipeline:
+
+   * Edge Pruning
+   * Feature Smoothing
+   * Graph Reconstruction
+6. Restores performance close to baseline
+7. Produces detailed outputs suitable for a research paper
+
+---
+
+🔴 STRICT SYSTEM PIPELINE (DO NOT CHANGE)
+
+Dataset (Static + Dynamic)
+↓
+Baseline Training (GCN + optional GAT)
+↓
+Baseline Evaluation
+↓
+Apply Attacks (one-by-one, not combined)
+↓
+Evaluate Attack Impact
+↓
+Apply Structural Defense
+↓
+Reconstruct Graph + Features
+↓
+Retrain / Re-evaluate Model
+↓
+Final Evaluation + Visualization
+
+---
+
+🔴 DATASETS
+
+1. Static Dataset:
+
+   * Cora (Planetoid dataset)
+
+2. Dynamic Dataset:
+
+   * Create evolving graph:
+
+     * simulate time steps
+     * randomly add/remove edges per timestep
+     * optionally perturb features slightly
+
+---
+
+🔴 MODEL REQUIREMENTS
+
+Implement 2-layer GCN:
+
+Layer 1:
+
+* Input: Node features X
+* Operation: A_hat * X * W0
+* Activation: ReLU
+* Apply dropout
+
+Layer 2:
+
+* Input: Hidden embedding
+* Operation: A_hat * H1 * W1
+* Output: logits
+
+Output:
+
+* Node embeddings (from layer 1)
+* Final predictions
+* Softmax probabilities
+
+OPTIONAL:
+
+* Also implement GAT for comparison
+
+---
+
+🔴 ATTACK MODULE (MUST IMPLEMENT ALL)
+
+---
+
+🟥 POISONING ATTACKS (TRAINING TIME)
+
+1. Nettack:
+
+   * Target specific nodes
+   * Modify:
+
+     * node features
+     * adjacency matrix
+   * Use gradient-based scoring for perturbation selection
+
+2. Meta Attack:
+
+   * Optimize graph structure to maximize validation loss
+   * Treat adjacency matrix as learnable
+
+3. Random Structure Attack:
+
+   * Randomly add/remove edges
+   * Used as baseline attack
+
+---
+
+🟥 EVASION ATTACKS (TEST TIME)
+
+4. Feature Perturbation Attack (CRITICAL):
+
+   * Add noise to node features
+   * Control via epsilon
+
+5. Edge Flip Attack:
+
+   * Add/remove edges strategically or randomly
+
+6. Gradient-Based Attack:
+
+   * Compute gradient of loss wrt features
+   * Apply perturbation in gradient direction
+
+---
+
+🔴 ATTACK EXECUTION RULES
+
+* Apply ONE attack at a time
+* Save attacked graph separately
+* Do NOT mix attacks
+* Evaluate each attack independently
+
+---
+
+🔴 DEFENSE MODULE (STRUCTURAL ONLY)
+
+You MUST implement the following EXACT defense pipeline:
+
+---
+
+🟢 STEP 1: EDGE PRUNING
+
+Goal:
+Remove adversarial edges
+
+Method:
+
+* Compute cosine similarity between connected nodes
+* If similarity < threshold → remove edge
+
+Ensure:
+
+* Graph remains connected
+* Do not remove too many edges
+
+---
+
+🟢 STEP 2: FEATURE SMOOTHING
+
+Goal:
+Reduce adversarial noise in features
+
+Method:
+
+* Apply graph-based smoothing:
+
+X' = A_hat * X
+
+Effect:
+
+* Propagates clean neighborhood features
+* Suppresses adversarial spikes
+
+---
+
+🟢 STEP 3: GRAPH RECONSTRUCTION
+
+Goal:
+Rebuild graph after pruning
+
+Method:
+
+* Construct k-NN graph using node features
+* Use cosine similarity
+* Keep top-k neighbors
+
+---
+
+🔴 DEFENSE PIPELINE ORDER (STRICT)
+
+Attacked Graph
+↓
+Edge Pruning
+↓
+Feature Smoothing
+↓
+Graph Reconstruction
+↓
+Clean Graph
+
+---
+
+🔴 TRAINING + EVALUATION
+
+Train model in 3 conditions:
+
+1. Clean dataset
+2. Attacked dataset
+3. Defended dataset
+
+---
+
+🔴 METRICS (ALL REQUIRED)
+
+Classification Metrics:
+
+* Accuracy
+* Precision
+* Recall
+* F1 Score
+
+Robustness Metrics:
+
+* Accuracy Drop = Baseline - Attacked
+* Recovery Rate = (Defended - Attacked) / (Baseline - Attacked)
+* Attack Success Rate (if targeted)
+
+---
+
+🔴 OUTPUT REQUIREMENTS
+
+You MUST generate:
+
+---
+
+1. TABLES
+
+Table 1: Attack Impact
+
+| Attack | Accuracy | Precision | Recall | F1 |
+
+Table 2: Defense Performance
+
+| Attack | After Attack | After Defense | Recovery |
+
+---
+
+2. VISUALIZATIONS
+
+* Accuracy comparison bar graph
+* Attack vs Defense line plot
+
+---
+
+3. GRAPH VISUALIZATION
+
+* Original Graph
+* Attacked Graph
+* Defended Graph
+
+---
+
+4. EMBEDDING VISUALIZATION
+
+* t-SNE or UMAP
+* Show:
+
+  * Clean embeddings
+  * Attacked embeddings
+  * Defended embeddings
+
+---
+
+🔴 EXPECTED BEHAVIOR
+
+Ensure:
+
+* Baseline accuracy ~80–85%
+* Attacks significantly reduce accuracy (~40–60%)
+* Defense restores performance (~75–82%)
+
+If results do not follow this trend → fix implementation.
+
+---
+
+🔴 PROJECT STRUCTURE (MANDATORY)
+
+datasets/
+models/
+attacks/
+defense/
+evaluation/
+visualization/
+utils/
+experiments/
+main.py
+
+---
+
+🔴 IMPLEMENTATION QUALITY REQUIREMENTS
+
+* Modular code
+* Reproducible experiments
+* Clear separation of attack and defense
+* No hardcoded shortcuts
+* Each component must be reusable
+
+---
+
+🔴 FINAL GOAL
+
+The system should behave like a real experimental research pipeline that:
+
+* demonstrates vulnerability of GNNs
+* evaluates multiple adversarial attacks
+* applies structural defense
+* shows measurable recovery
+
+---
+
+This is NOT a toy project.
+This must be implemented as a full experimental framework suitable for academic evaluation.
