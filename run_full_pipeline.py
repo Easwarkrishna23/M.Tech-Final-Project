@@ -349,14 +349,20 @@ def phase7(elliptic, ell_model, ell_params):
     attack_accs_ell   = {}
     defended_accs_ell = {}
 
-    for attack_fn, atk_name, kwargs in [
-        (gradient_attack,          "gradient_attack",
+    # (needs_model, attack_fn, name, kwargs)
+    attack_specs = [
+        (True,  gradient_attack,             "gradient_attack",
          {"epsilon": cfg.attack.grad_epsilon, "steps": cfg.attack.grad_steps}),
-        (feature_perturbation_attack, "feature_perturbation",
+        (False, feature_perturbation_attack, "feature_perturbation",
          {"epsilon": cfg.attack.feature_epsilon}),
-    ]:
+    ]
+
+    for needs_model, attack_fn, atk_name, kwargs in attack_specs:
         print(f"\n  [{atk_name}]")
-        ar = attack_fn(final_snap, ell_model, ell_params, **kwargs)
+        if needs_model:
+            ar = attack_fn(final_snap, ell_model, ell_params, **kwargs)
+        else:
+            ar = attack_fn(final_snap, **kwargs)
 
         _, atk_preds, _ = predict(ell_model, ell_params, ar.perturbed_graph)
         atk_m = classification_metrics(
@@ -391,18 +397,16 @@ def phase7(elliptic, ell_model, ell_params):
     # ── Temporal line plots ──────────────────────────────────────────────────
     print("\n[7.3] Building temporal line plots (all 49 timesteps) …")
 
-    for attack_fn, atk_name, kwargs in [
-        (gradient_attack,          "gradient_attack",
-         {"epsilon": cfg.attack.grad_epsilon, "steps": cfg.attack.grad_steps}),
-        (feature_perturbation_attack, "feature_perturbation",
-         {"epsilon": cfg.attack.feature_epsilon}),
-    ]:
+    for needs_model, attack_fn, atk_name, kwargs in attack_specs:
         print(f"\n  [{atk_name}] temporal lines …")
         attacked_accs_t = []
         defended_accs_t = []
 
         for t, snap in enumerate(elliptic.snapshots):
-            ar = attack_fn(snap, ell_model, ell_params, **kwargs)
+            if needs_model:
+                ar = attack_fn(snap, ell_model, ell_params, **kwargs)
+            else:
+                ar = attack_fn(snap, **kwargs)
 
             _, atk_preds, _ = predict(ell_model, ell_params, ar.perturbed_graph)
             atk_m = classification_metrics(
