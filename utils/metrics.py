@@ -4,6 +4,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from typing import Optional
 
 
+
 def classification_metrics(y_true: np.ndarray, y_pred: np.ndarray,
                             mask: Optional[np.ndarray] = None) -> dict:
     """
@@ -28,14 +29,16 @@ def accuracy_drop(baseline_acc: float, attacked_acc: float) -> float:
 
 
 def recovery_rate(baseline_acc: float, attacked_acc: float,
-                  defended_acc: float) -> float:
+                  defended_acc: float) -> Optional[float]:
     """
     Recovery Rate = (Defended − Attacked) / (Baseline − Attacked).
     1.0 = full recovery, 0.0 = no recovery, >1.0 = surpassed baseline.
+    Returns None when attack caused no degradation (denominator ≈ 0),
+    which should be reported as 'N/A' rather than a misleading number.
     """
     denom = baseline_acc - attacked_acc
-    if abs(denom) < 1e-8:
-        return 1.0   # no damage → trivially recovered
+    if abs(denom) < 1e-3:
+        return None   # no meaningful damage — rate is undefined
     return (defended_acc - attacked_acc) / denom
 
 
@@ -91,10 +94,12 @@ def format_defense_table(results: dict[str, dict]) -> str:
     sep =    "| --- | --- | --- | --- |"
     rows = []
     for attack_name, m in results.items():
+        rr = m.get('recovery_rate', None)
+        rr_str = f"{rr:.1%}" if rr is not None else "N/A (no damage)"
         rows.append(
             f"| {attack_name} "
             f"| {m.get('attacked_acc', 0.0):.4f} "
             f"| {m.get('defended_acc', 0.0):.4f} "
-            f"| {m.get('recovery_rate', 0.0):.4f} |"
+            f"| {rr_str} |"
         )
     return "\n".join([header, sep] + rows)

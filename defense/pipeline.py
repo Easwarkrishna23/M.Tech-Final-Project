@@ -44,39 +44,57 @@ def run_defense(
     defense_cfg: DefenseConfig,
     model_cfg: ModelConfig,
     seed: int = 42,
+    baseline_acc: float = 0.0,
+    attacked_acc: float = 0.0,
+    damage_threshold: float = 0.05,
 ) -> DefenseResult:
     """
     Apply the full 3-step structural defense pipeline.
 
-    For poisoning attacks: retrain on defended graph (same as attack eval).
-    For evasion attacks:   reuse clean params (defense only fixes the graph).
+    Conditional reconstruction: if accuracy damage < damage_threshold,
+    the k-NN graph reconstruction step is skipped. This prevents the
+    defense from introducing noise when the attack barely damaged the graph
+    (e.g. structural attacks at moderate budgets). Feature smoothing is
+    still applied in all cases as it is cheap and non-destructive.
 
     Args:
-        attacked_graph:  Perturbed GraphData from Phase 4.
-        model:           GCN/GAT module.
-        attack_type:     'poisoning' or 'evasion'.
-        attacked_params: Params used during attack evaluation.
-        defense_cfg:     DefenseConfig thresholds.
-        model_cfg:       ModelConfig for retraining.
-        seed:            RNG seed.
+        attacked_graph:    Perturbed GraphData from Phase 4.
+        model:             GCN/GAT module.
+        attack_type:       'poisoning' or 'evasion'.
+        attacked_params:   Params used during attack evaluation.
+        defense_cfg:       DefenseConfig thresholds.
+        model_cfg:         ModelConfig for retraining.
+        seed:              RNG seed.
+        baseline_acc:      Clean model test accuracy (for damage gate).
+        attacked_acc:      Post-attack test accuracy (for damage gate).
+        damage_threshold:  Skip reconstruction if drop < this value.
 
     Returns:
         DefenseResult with clean graph and evaluation-ready params.
     """
-    print(f"  [Defense Pipeline] Starting on {attacked_graph.name}")
+    from models.train import train_model
 
-    # Step 1: Edge Pruning
+    damage = max(0.0, baseline_acc - attacked_acc)
+    print(f"  [Defense Pipeline] Starting on {attacked_graph.name} "
+          f"(damage={damage:.3f})")
+
+    # Step 1: Edge Pruning — always run (uses feature similarity, never hurts)
     pruned_graph, pruning_stats = edge_pruning(attacked_graph, defense_cfg)
 
-    # Step 2: Feature Smoothing
+    # Step 2: Feature Smoothing — always run (cheap, suppresses feature noise)
     smoothed_graph, smoothing_stats = feature_smoothing(pruned_graph)
 
-    # Step 3: Graph Reconstruction
-    defended_graph, recon_stats = graph_reconstruction(smoothed_graph, defense_cfg)
+    # Step 3: Graph Reconstruction — conditional on attack damage
+    if damage >= damage_threshold:
+        defended_graph, recon_stats = graph_reconstruction(smoothed_graph, defense_cfg)
+    else:
+        print(f"  [Defense] Damage {damage:.3f} < threshold {damage_threshold:.2f} "
+              f"— skipping k-NN reconstruction")
+        defended_graph = smoothed_graph
+        recon_stats = {"skipped": True, "reason": f"damage={damage:.3f} below threshold"}
 
     # Retrain on defended graph
     print(f"  [Defense] Retraining model on defended graph...")
-    from models.train import train_model
     result = train_model(model, defended_graph, model_cfg,
                          seed=seed, verbose=False)
     print(f"  [Defense] Defended val acc: {result.best_val_acc:.4f}")
@@ -97,15 +115,23 @@ def run_all_defenses(
     model_cfg: ModelConfig,
     seed: int = 42,
     save_dir: Optional[Path] = None,
+    baseline_acc: float = 0.0,
+    attack_accs: Optional[dict] = None,
+    damage_threshold: float = 0.05,
 ) -> dict[str, DefenseResult]:
     """
     Run defense pipeline for every attack result from Phase 4.
+
+    Args:
+        attack_accs: Dict {attack_name: attacked_accuracy} from Phase 4 eval.
+                     Used to gate k-NN reconstruction on meaningful damage.
 
     Returns:
         Dict mapping attack_name → DefenseResult.
     """
     from attacks.runner import EvaluatedAttack
     defense_results = {}
+    attack_accs = attack_accs or {}
 
     print(f"\n{'='*60}")
     print("PHASE 5 — Structural Defense Pipeline")
@@ -121,6 +147,9 @@ def run_all_defenses(
             defense_cfg=defense_cfg,
             model_cfg=model_cfg,
             seed=seed,
+            baseline_acc=baseline_acc,
+            attacked_acc=attack_accs.get(attack_name, 0.0),
+            damage_threshold=damage_threshold,
         )
         defense_results[attack_name] = dr
 

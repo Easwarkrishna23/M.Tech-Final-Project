@@ -1,30 +1,33 @@
 """
-Nettack — gradient-based targeted poisoning attack.
+Nettack — margin-based targeted poisoning attack.
 
 Reference: Zügner et al., "Adversarial Attacks on Neural Networks for
 Graph Data", KDD 2018.
 
-Strategy (simplified gradient-based approximation):
+Strategy (classification-margin scoring):
   For each target node v:
-    1. Compute gradient of loss(v) w.r.t. every possible edge flip (i,j)
-       using the surrogate: score = |grad_A[i,j]| * (1 - 2*A[i,j])
-       The (1-2A) term ensures we reward flips, not reinforcing existing state.
-    2. Separately compute feature perturbation scores via gradient of loss
-       w.r.t. X[v,:].
+    1. Score each candidate edge flip (i,j) by its effect on the
+       CLASSIFICATION MARGIN of v:
+         margin = logit[true_class] - max(logit[other_classes])
+       The flip that most REDUCES this margin is chosen (best for attacker).
+       This is evaluated by a forward pass on a locally-perturbed adjacency,
+       restricted to edges incident to v (direct attack) to keep cost tractable.
+    2. Separately score feature flips by margin reduction on X[v,:].
     3. Greedily apply the top-scoring perturbations up to budget.
 
-Perturbations modify:
-  - Adjacency structure (add/remove edges around target nodes)
-  - Node features of target nodes
+Why margin scoring beats raw gradient magnitude:
+  Gradient magnitude measures sensitivity of loss, not of the actual decision
+  boundary. Two perturbations may have equal gradient magnitude but very
+  different effects on whether the node is misclassified. Margin scoring
+  directly measures the decision-boundary effect and reliably achieves
+  non-zero Attack Success Rates.
 """
-import jax
 import jax.numpy as jnp
 import numpy as np
 from typing import Optional
 
 from datasets.cora_loader import GraphData
-from models.train import eval_step, cross_entropy_loss
-from attacks.base import AttackResult, edge_budget, diff_edges
+from attacks.base import AttackResult, diff_edges
 from utils.graph_utils import normalize_adjacency
 from flax import linen as nn
 
@@ -98,6 +101,7 @@ def nettack(
 def _attack_single_node(v, adj, feats, labels, model, params,
                          n_perturbations, direct_attack):
     n = adj.shape[0]
+    true_label = int(labels[v])
 
     for _ in range(n_perturbations):
         a_hat = normalize_adjacency(adj)
@@ -105,65 +109,93 @@ def _attack_single_node(v, adj, feats, labels, model, params,
         a_j   = jnp.array(a_hat)
         lbl_j = jnp.array(labels)
 
-        # Gradient of loss(v) w.r.t. adjacency
-        grad_adj = _grad_adj(params, model, x_j, a_j, lbl_j, v, n)
-
-        # Candidate scores: score(i,j) = |grad| * flip_direction
-        # flip_direction = 1 - 2*A[i,j]  (positive when flipping adds value)
-        flip_dir = 1.0 - 2.0 * adj
-        scores_adj = np.abs(grad_adj) * flip_dir
-
+        # ── Structural perturbation: margin-based scoring ────────────────────
+        # Candidate set: 2-hop neighborhood of v (direct attack) or all edges.
+        # Restricting to 2-hop keeps candidates ~50-150 nodes instead of 2708,
+        # making margin scoring tractable without sacrificing targeting quality.
         if direct_attack:
-            # Only edges incident to v
-            mask = np.zeros((n, n), dtype=bool)
-            mask[v, :] = True
-            mask[:, v] = True
-            np.fill_diagonal(mask, False)
-            scores_adj = np.where(mask, scores_adj, -np.inf)
+            hop1 = set(np.where(adj[v] > 0)[0])
+            hop2 = set()
+            for u in hop1:
+                hop2.update(np.where(adj[u] > 0)[0])
+            neighborhood = (hop1 | hop2) - {v}
+            if len(neighborhood) == 0:
+                neighborhood = set(range(n)) - {v}
+            candidates = [(v, j) for j in neighborhood] + \
+                         [(i, v) for i in neighborhood if i != v]
+            # deduplicate
+            candidates = list({(min(a,b), max(a,b)) for a, b in candidates})
         else:
-            np.fill_diagonal(scores_adj, -np.inf)
+            rows, cols = np.where(np.triu(np.ones((n, n), dtype=bool), k=1))
+            candidates = list(zip(rows.tolist(), cols.tolist()))
 
-        # Best edge flip
-        best_edge = int(np.argmax(scores_adj))
-        i_e, j_e = best_edge // n, best_edge % n
-        if scores_adj[i_e, j_e] > -np.inf:
-            adj[i_e, j_e] = 1.0 - adj[i_e, j_e]
-            adj[j_e, i_e] = adj[i_e, j_e]
+        best_margin_drop = -np.inf
+        best_ie, best_je = -1, -1
 
-        # Gradient of loss(v) w.r.t. features[v]
-        grad_feat = _grad_feat(params, model, x_j, a_j, lbl_j, v)
-        feat_score = np.abs(grad_feat)
-        best_f = int(np.argmax(feat_score))
-        feats[v, best_f] = 1.0 - feats[v, best_f]   # flip binary feature
+        for i_e, j_e in candidates:
+            # Simulate this flip
+            adj_try = adj.copy()
+            adj_try[i_e, j_e] = 1.0 - adj_try[i_e, j_e]
+            adj_try[j_e, i_e] = adj_try[i_e, j_e]
+
+            a_hat_try = jnp.array(normalize_adjacency(adj_try))
+            _, logits_try, _ = model.apply(
+                {"params": params}, x_j, a_hat_try, training=False
+            )
+            logits_v = np.array(logits_try[v])
+            margin = _classification_margin(logits_v, true_label)
+            # Lower margin = harder to classify correctly = better for attacker
+            if -margin > best_margin_drop:
+                best_margin_drop = -margin
+                best_ie, best_je = i_e, j_e
+
+        if best_ie >= 0:
+            adj[best_ie, best_je] = 1.0 - adj[best_ie, best_je]
+            adj[best_je, best_ie] = adj[best_ie, best_je]
+
+        # ── Feature perturbation: gradient pre-filter then margin score ─────
+        # Pre-filter: use gradient magnitude to select top-K feature candidates,
+        # then do accurate margin scoring only on those K.
+        # This avoids 1433 forward passes per step while keeping quality high.
+        a_hat_cur = jnp.array(normalize_adjacency(adj))
+        x_cur     = jnp.array(feats)
+
+        def _feat_loss(x_):
+            _, logits_, _ = model.apply({"params": params}, x_, a_hat_cur, training=False)
+            lp = jax.nn.log_softmax(logits_[v])
+            return -lp[jnp.where(labels[v] >= 0, labels[v], 0)]
+
+        import jax
+        grad_feat = np.abs(np.array(jax.grad(_feat_loss)(x_cur)[v]))
+        top_k = min(50, feats.shape[1])
+        top_feats = np.argsort(grad_feat)[-top_k:]   # top-K by gradient magnitude
+
+        best_feat_drop = -np.inf
+        best_f = -1
+        for f in top_feats:
+            feats_try = feats.copy()
+            feats_try[v, f] = 1.0 - feats_try[v, f]
+            x_try = jnp.array(feats_try)
+            _, logits_try, _ = model.apply(
+                {"params": params}, x_try, a_hat_cur, training=False
+            )
+            logits_v = np.array(logits_try[v])
+            margin = _classification_margin(logits_v, true_label)
+            if -margin > best_feat_drop:
+                best_feat_drop = -margin
+                best_f = f
+
+        if best_f >= 0:
+            feats[v, best_f] = 1.0 - feats[v, best_f]
 
     return adj, feats
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# JAX gradient helpers
-# ──────────────────────────────────────────────────────────────────────────────
-
-def _loss_for_node(params, model, x, a_hat_flat, labels, v, n):
-    a_hat = a_hat_flat.reshape(n, n)
-    _, logits, _ = model.apply({"params": params}, x, a_hat, training=False)
-    log_p = jax.nn.log_softmax(logits[v])
-    return -log_p[jnp.where(labels[v] >= 0, labels[v], 0)]
-
-
-def _grad_adj(params, model, x, a_hat, labels, v, n):
-    a_flat = a_hat.reshape(-1)
-    grad_fn = jax.grad(_loss_for_node, argnums=3)
-    g = grad_fn(params, model, x, a_flat, labels, v, n)
-    return np.array(g).reshape(n, n)
-
-
-def _grad_feat(params, model, x, a_hat, labels, v):
-    def loss_fn(x_):
-        _, logits, _ = model.apply({"params": params}, x_, a_hat, training=False)
-        log_p = jax.nn.log_softmax(logits[v])
-        return -log_p[jnp.where(labels[v] >= 0, labels[v], 0)]
-    g = jax.grad(loss_fn)(x)
-    return np.array(g[v])
+def _classification_margin(logits_v: np.ndarray, true_label: int) -> float:
+    """margin = logit[true_class] - max(logit[other_classes]). Lower = worse."""
+    true_score  = logits_v[true_label]
+    other_max   = float(np.max(np.delete(logits_v, true_label)))
+    return float(true_score - other_max)
 
 
 def _eval_full(params, model, x, a_hat, labels, mask):

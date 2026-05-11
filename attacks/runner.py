@@ -28,10 +28,11 @@ from attacks.random_structure import random_structure_attack
 from attacks.feature_perturbation import feature_perturbation_attack
 from attacks.edge_flip import edge_flip_attack
 from attacks.gradient_attack import gradient_attack
+from attacks.dice import dice_attack
 from utils.config import AttackConfig, ModelConfig
 
 
-POISONING_ATTACKS = {"nettack", "meta_attack", "random_structure"}
+POISONING_ATTACKS = {"nettack", "meta_attack", "random_structure", "dice"}
 EVASION_ATTACKS   = {"feature_perturbation", "edge_flip", "gradient_attack"}
 ATTACK_NAMES      = list(POISONING_ATTACKS) + list(EVASION_ATTACKS)
 
@@ -72,8 +73,8 @@ def run_all_attacks(
     print(f"PHASE 4 — Adversarial Attacks on {graph.name.upper()}")
     print(f"{'='*60}")
 
-    # ── Poisoning Attack 1: Nettack ───────────────────────────────
-    print("\n[Poisoning 1/3] Nettack")
+    # ── Poisoning Attack 1: Nettack (margin-based) ───────────────
+    print("\n[Poisoning 1/4] Nettack (margin scoring)")
     r = nettack(graph, model, clean_params,
                 n_perturbations=attack_cfg.nettack_n_perturbations,
                 direct_attack=attack_cfg.nettack_direct)
@@ -81,8 +82,17 @@ def run_all_attacks(
     poisoned_params = _retrain(r.perturbed_graph, model, model_cfg, seed, "Nettack")
     results["nettack"] = EvaluatedAttack(r, "poisoning", poisoned_params, retrained=True)
 
-    # ── Poisoning Attack 2: Meta Attack ───────────────────────────
-    print("\n[Poisoning 2/3] Meta Attack")
+    # ── Poisoning Attack 2: DICE ──────────────────────────────────
+    print("\n[Poisoning 2/4] DICE Attack")
+    r = dice_attack(graph, model, clean_params,
+                    budget_ratio=attack_cfg.meta_budget_ratio,
+                    seed=seed)
+    print(f"  {r.summary()}")
+    poisoned_params = _retrain(r.perturbed_graph, model, model_cfg, seed, "DICE")
+    results["dice"] = EvaluatedAttack(r, "poisoning", poisoned_params, retrained=True)
+
+    # ── Poisoning Attack 3: Meta Attack (with inner-loop retrain) ─
+    print("\n[Poisoning 3/4] Meta Attack (bilevel approx.)")
     r = meta_attack(graph, model, clean_params,
                     budget_ratio=attack_cfg.meta_budget_ratio,
                     n_steps=attack_cfg.meta_epochs)
@@ -90,8 +100,8 @@ def run_all_attacks(
     poisoned_params = _retrain(r.perturbed_graph, model, model_cfg, seed, "Meta Attack")
     results["meta_attack"] = EvaluatedAttack(r, "poisoning", poisoned_params, retrained=True)
 
-    # ── Poisoning Attack 3: Random Structure ──────────────────────
-    print("\n[Poisoning 3/3] Random Structure Attack")
+    # ── Poisoning Attack 4: Random Structure ──────────────────────
+    print("\n[Poisoning 4/4] Random Structure Attack")
     r = random_structure_attack(graph,
                                 budget_ratio=attack_cfg.random_budget_ratio,
                                 seed=seed)
