@@ -37,8 +37,8 @@ def recovery_rate(baseline_acc: float, attacked_acc: float,
     which should be reported as 'N/A' rather than a misleading number.
     """
     denom = baseline_acc - attacked_acc
-    if abs(denom) < 1e-3:
-        return None   # no meaningful damage — rate is undefined
+    if abs(denom) < 0.05:
+        return None   # < 5pp damage — recovery rate is undefined/misleading
     return (defended_acc - attacked_acc) / denom
 
 

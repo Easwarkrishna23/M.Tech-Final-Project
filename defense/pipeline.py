@@ -81,17 +81,19 @@ def run_defense(
     # Step 1: Edge Pruning — always run (uses feature similarity, never hurts)
     pruned_graph, pruning_stats = edge_pruning(attacked_graph, defense_cfg)
 
-    # Step 2: Feature Smoothing — always run (cheap, suppresses feature noise)
-    smoothed_graph, smoothing_stats = feature_smoothing(pruned_graph)
-
-    # Step 3: Graph Reconstruction — conditional on attack damage
+    # Steps 2+3 — conditional on attack damage.
+    # Feature smoothing modifies features by ~3 L2 units even for structural attacks,
+    # which can hurt accuracy on models retrained on the defended graph.
+    # Skip both smoothing and reconstruction when damage is below threshold.
     if damage >= damage_threshold:
+        smoothed_graph, smoothing_stats = feature_smoothing(pruned_graph)
         defended_graph, recon_stats = graph_reconstruction(smoothed_graph, defense_cfg)
     else:
         print(f"  [Defense] Damage {damage:.3f} < threshold {damage_threshold:.2f} "
-              f"— skipping k-NN reconstruction")
-        defended_graph = smoothed_graph
-        recon_stats = {"skipped": True, "reason": f"damage={damage:.3f} below threshold"}
+              f"— skipping feature smoothing + k-NN reconstruction")
+        defended_graph = pruned_graph
+        smoothing_stats = {"skipped": True, "reason": f"damage={damage:.3f} below threshold"}
+        recon_stats     = {"skipped": True, "reason": f"damage={damage:.3f} below threshold"}
 
     # Retrain on defended graph
     print(f"  [Defense] Retraining model on defended graph...")

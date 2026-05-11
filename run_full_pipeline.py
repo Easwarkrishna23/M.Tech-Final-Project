@@ -349,12 +349,21 @@ def phase7(elliptic, ell_model, ell_params):
     attack_accs_ell   = {}
     defended_accs_ell = {}
 
+    # Scale epsilon to Elliptic's feature range (continuous, not binary [0,1] like Cora).
+    # Elliptic features have std ~1-5; ε=0.15 (Cora) is negligible here.
+    # Use ε = 20% of per-feature std, capped at 0.5, as dataset-agnostic scaling.
+    feat_std  = float(np.std(final_snap.features))
+    ell_grad_epsilon = min(0.5, feat_std * 0.20)
+    ell_feat_epsilon = min(1.0, feat_std * 0.50)
+    print(f"  [Elliptic] feature std={feat_std:.3f}  "
+          f"grad_ε={ell_grad_epsilon:.3f}  feat_ε={ell_feat_epsilon:.3f}")
+
     # (needs_model, attack_fn, name, kwargs)
     attack_specs = [
         (True,  gradient_attack,             "gradient_attack",
-         {"epsilon": cfg.attack.grad_epsilon, "steps": cfg.attack.grad_steps}),
+         {"epsilon": ell_grad_epsilon, "steps": cfg.attack.grad_steps}),
         (False, feature_perturbation_attack, "feature_perturbation",
-         {"epsilon": cfg.attack.feature_epsilon}),
+         {"epsilon": ell_feat_epsilon}),
     ]
 
     for needs_model, attack_fn, atk_name, kwargs in attack_specs:
