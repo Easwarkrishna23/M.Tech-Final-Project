@@ -1,0 +1,108 @@
+{
+  "attack_accs": {
+    "nettack": 0.778,
+    "dice": 0.748,
+    "meta_attack": 0.799,
+    "random_structure": 0.754,
+    "feature_perturbation": 0.419,
+    "edge_flip": 0.736,
+    "gradient_attack": 0.0
+  },
+  "defended_accs": {
+    "nettack": 0.775,
+    "dice": 0.734,
+    "meta_attack": 0.791,
+    "random_structure": 0.73,
+    "feature_perturbation": 0.739,
+    "edge_flip": 0.729,
+    "gradient_attack": 0.921
+  },
+  "attack_metrics": {
+    "nettack": {
+      "accuracy": 0.778,
+      "f1": 0.7685,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "dice": {
+      "accuracy": 0.748,
+      "f1": 0.7442,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "meta_attack": {
+      "accuracy": 0.799,
+      "f1": 0.7924,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "random_structure": {
+      "accuracy": 0.754,
+      "f1": 0.7473,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "feature_perturbation": {
+      "accuracy": 0.419,
+      "f1": 0.1784,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "edge_flip": {
+      "accuracy": 0.736,
+      "f1": 0.7248,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "gradient_attack": {
+      "accuracy": 0.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0
+    }
+  },
+  "defended_metrics": {
+    "nettack": {
+      "accuracy": 0.775,
+      "f1": 0.7666,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "dice": {
+      "accuracy": 0.734,
+      "f1": 0.729,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "meta_attack": {
+      "accuracy": 0.791,
+      "f1": 0.783,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "random_structure": {
+      "accuracy": 0.73,
+      "f1": 0.719,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "feature_perturbation": {
+      "accuracy": 0.739,
+      "f1": 0.7426,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "edge_flip": {
+      "accuracy": 0.729,
+      "f1": 0.7232,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "gradient_attack": {
+      "accuracy": 0.921,
+      "f1": 0.9123,
+      "precision": 0.0,
+      "recall": 0.0
+    }
+  }
+}

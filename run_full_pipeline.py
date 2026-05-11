@@ -159,10 +159,52 @@ def phase3(cora, elliptic):
 # Phase 4+5 — Cora attacks + defense
 # ─────────────────────────────────────────────────────────────────────────────
 
+CACHE_FILE = ROOT / "results" / "phase45_cache.json"
+
+
+def _save_cache(attack_accs, defended_accs, attack_metrics, defended_metrics):
+    import json
+    cache = {
+        "attack_accs":      attack_accs,
+        "defended_accs":    defended_accs,
+        "attack_metrics":   attack_metrics,
+        "defended_metrics": defended_metrics,
+    }
+    CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    CACHE_FILE.write_text(json.dumps(cache, indent=2))
+    print(f"  [Cache] Phase 4+5 results saved → {CACHE_FILE}")
+
+
+def _load_cache():
+    import json
+    if not CACHE_FILE.exists():
+        return None
+    cache = json.loads(CACHE_FILE.read_text())
+    print(f"  [Cache] Loading Phase 4+5 results from {CACHE_FILE}")
+    return (cache["attack_accs"], cache["defended_accs"],
+            cache["attack_metrics"], cache["defended_metrics"])
+
+
 def phase45(cora, cora_model, cora_params, baseline_acc):
     _banner("PHASE 4+5 — Cora Attacks + Defense")
-    t0 = time.time()
 
+    # Return cached results if all attacked/defended graphs already exist
+    cached = _load_cache()
+    if cached is not None:
+        attack_accs, defended_accs, attack_metrics, defended_metrics = cached
+        print("  [Skip] Phase 4+5 already complete — using cached results")
+        print("\n[Phase 4 Results (cached)]")
+        for atk, m in attack_metrics.items():
+            print(f"  {atk:25s}  acc={m['accuracy']:.4f}  f1={m['f1']:.4f}  "
+                  f"drop={baseline_acc - m['accuracy']:+.4f}")
+        print("\n[Phase 5 Results (cached)]")
+        for atk in attack_accs:
+            rr = recovery_rate(baseline_acc, attack_accs[atk], defended_accs[atk])
+            rr_str = f"{rr:.1%}" if rr is not None else "N/A"
+            print(f"  {atk:25s}  acc={defended_accs[atk]:.4f}  recovery={rr_str}")
+        return None, None, attack_accs, defended_accs, attack_metrics, defended_metrics
+
+    t0 = time.time()
     attack_results = run_all_attacks(
         graph=cora,
         model=cora_model,
@@ -212,6 +254,7 @@ def phase45(cora, cora_model, cora_params, baseline_acc):
         print(f"  {atk_name:25s}  acc={m['accuracy']:.4f}  f1={m['f1']:.4f}  "
               f"recovery={rr_str}")
 
+    _save_cache(attack_accs, defended_accs, attack_metrics, defended_metrics)
     print(f"  Phase 4+5 done in {_elapsed(t0)}")
     return attack_results, defense_results, attack_accs, defended_accs, attack_metrics, defended_metrics
 
