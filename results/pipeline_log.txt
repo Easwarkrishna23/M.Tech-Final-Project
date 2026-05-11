@@ -1,0 +1,742 @@
+Pipeline started at 2026-05-11 22:37:59
+Log → /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/pipeline_log.txt
+
+============================================================
+  PHASE 1 — Dataset Loading
+============================================================
+[Cora] Loaded: 2708 nodes, 5278 edges, 1433 features, 7 classes
+       Train: 140, Val: 500, Test: 1000
+[Elliptic] Loading dataset (downloading if needed)...
+[Elliptic] Reading raw CSVs...
+[Elliptic] Building 49 snapshots...
+  [t=10/49] nodes=6727, edges=8588, labeled=14.4%, illicit=1.9%
+  [t=20/49] nodes=4291, edges=4755, labeled=21.0%, illicit=28.9%
+  [t=30/49] nodes=2483, edges=2561, labeled=21.1%, illicit=15.8%
+  [t=40/49] nodes=4481, edges=5246, labeled=27.0%, illicit=9.2%
+  [t=49/49] nodes=2454, edges=2587, labeled=19.4%, illicit=11.8%
+
+[Elliptic] Done — 49 snapshots loaded.
+  Nodes/snapshot : min=1089, max=7880, avg=4158
+  Edges/snapshot : min=1168, max=9164, avg=4782
+  Labeled ratio  : avg=22.4%
+  Illicit ratio  : avg=11.3% (class imbalance)
+  Cora    : {'num_nodes': 2708, 'num_edges': 5278, 'avg_degree': 3.8980797636632203, 'min_degree': 1, 'max_degree': 168, 'density': 0.0014399999126942077}
+  Elliptic: 49 timesteps, final snapshot {'num_nodes': 2454, 'num_edges': 2587, 'avg_degree': 2.10839445802771, 'min_degree': 1, 'max_degree': 152, 'density': 0.0008595166971168813}
+
+============================================================
+  PHASE 3 — Baseline Training
+============================================================
+  [Checkpoint] Loading gcn_cora_baseline.npz
+  [Cora GCN]  acc=0.8010  f1=0.7930  prec=0.7781  rec=0.8195
+  [Checkpoint] Loading gat_cora_baseline.npz
+  [Cora GAT]  acc=0.8130  f1=0.8062
+  [Checkpoint] Loading gcn_elliptic_train_era.npz
+  [Elliptic GCN final t=49]  acc=0.8750  f1=0.4667
+  Phase 3 done in 0m 2s
+
+============================================================
+  PHASE 4+5 — Cora Attacks + Defense
+============================================================
+  [Cache] Loading Phase 4+5 results from /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/phase45_cache.json
+  [Skip] Phase 4+5 already complete — using cached results
+
+[Phase 4 Results (cached)]
+  nettack                    acc=0.7780  f1=0.7685  drop=+0.0230
+  dice                       acc=0.7480  f1=0.7442  drop=+0.0530
+  meta_attack                acc=0.7990  f1=0.7924  drop=+0.0020
+  random_structure           acc=0.7540  f1=0.7473  drop=+0.0470
+  feature_perturbation       acc=0.4190  f1=0.1784  drop=+0.3820
+  edge_flip                  acc=0.7360  f1=0.7248  drop=+0.0650
+  gradient_attack            acc=0.0000  f1=0.0000  drop=+0.8010
+
+[Phase 5 Results (cached)]
+  nettack                    acc=0.7750  recovery=N/A
+  dice                       acc=0.7340  recovery=-26.4%
+  meta_attack                acc=0.7910  recovery=N/A
+  random_structure           acc=0.7300  recovery=N/A
+  feature_perturbation       acc=0.7390  recovery=83.8%
+  edge_flip                  acc=0.7290  recovery=-10.8%
+  gradient_attack            acc=0.9210  recovery=115.0%
+  [Tables] Saved → results/tables/cora_results.md
+
+============================================================
+  PHASE 6 — Cora Visualizations
+============================================================
+  [Viz] Saved → results/figures/accuracy_bar_cora.png
+  [Viz] Saved → results/figures/f1_bar_cora.png
+  [Viz] Saved → results/figures/attack_defense_line_cora.png
+  [Viz] Saved → results/figures/graph_viz_nettack_cora.png
+  [Viz] Saved → results/figures/degree_dist_nettack_cora.png
+  [Viz] Saved → results/figures/graph_viz_feature_perturbation_cora.png
+  [Viz] Saved → results/figures/degree_dist_feature_perturbation_cora.png
+  [Viz] Saved → results/figures/graph_viz_gradient_attack_cora.png
+  [Viz] Saved → results/figures/degree_dist_gradient_attack_cora.png
+  [Embeddings] Running TSNE on 1500 nodes × 64D embeddings …
+  [Viz] Saved → results/figures/embeddings_tsne_gradient_attack_cora.png
+  [Embeddings] Running TSNE on 1500 nodes × 64D embeddings …
+  [Viz] Saved → results/figures/embeddings_tsne_feature_perturbation_cora.png
+  [Embeddings] Running TSNE on 1500 nodes × 64D embeddings …
+  [Viz] Saved → results/figures/embeddings_tsne_nettack_cora.png
+  Phase 6 done in 0m 18s
+
+============================================================
+  PHASE 7 — Elliptic Temporal Evaluation
+============================================================
+
+[7.1] Temporal baseline across 49 timesteps …
+  t= 1  acc=0.658  f1=0.410
+  t=10  acc=0.873  f1=0.608
+  t=20  acc=0.756  f1=0.688
+  t=30  acc=0.841  f1=0.661
+  t=40  acc=0.898  f1=0.510
+
+[7.2] Attack + defense on final snapshot (t=49) …
+  Baseline  acc=0.8750  f1=0.4667
+  [Elliptic] feature std=0.917  grad_ε=0.183  feat_ε=0.458
+
+  [gradient_attack]
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+    After attack: acc=0.8750  f1=0.4667  drop=+0.0000
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4244 | removed 246/2587 edges (9.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9895
+    After defense: acc=0.9896  f1=0.9753  recovery=N/A
+
+  [feature_perturbation]
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2454 nodes
+    After attack: acc=0.8750  f1=0.4667  drop=+0.0000
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4542 | removed 238/2587 edges (9.2%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8842
+    After defense: acc=0.8750  f1=0.4667  recovery=N/A
+
+[7.3] Building temporal line plots (all 49 timesteps) …
+
+  [gradient_attack] temporal lines …
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.0713 | removed 894/9164 edges (9.8%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9930
+    t= 1  base=0.658  atk=0.991  def=0.991
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.0804 | removed 500/5241 edges (9.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9865
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.0990 | removed 800/8316 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9922
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.0729 | removed 774/8180 edges (9.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9792
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.0686 | removed 841/8623 edges (9.8%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9973
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1161 | removed 493/5242 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9897
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.0714 | removed 694/7253 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9167
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1200 | removed 490/5186 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9698
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.076)
+  [Edge Pruning] p10.0%→threshold=0.0963 | removed 576/5939 edges (9.7%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.8112, max Δ‖x‖=11.5493
+  [Graph Reconstruction] k=3 | edges: 5363 → 14232 (+8869 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8710
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1150 | removed 827/8588 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9845
+    t=10  base=0.873  atk=0.975  def=0.975
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.043)
+  [Edge Pruning] p10.0%→threshold=0.0847 | removed 445/4656 edges (9.6%)
+  [Defense] Damage 0.043 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9496
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1371 | removed 205/2213 edges (9.3%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9703
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.171)
+  [Edge Pruning] p10.0%→threshold=0.1116 | removed 460/4827 edges (9.5%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.8097, max Δ‖x‖=13.9388
+  [Graph Reconstruction] k=3 | edges: 4367 → 12553 (+8186 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9317
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1259 | removed 185/2078 edges (8.9%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9024
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.080)
+  [Edge Pruning] p10.0%→threshold=0.1506 | removed 354/3823 edges (9.3%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.6528, max Δ‖x‖=9.1325
+  [Graph Reconstruction] k=3 | edges: 3469 → 9903 (+6434 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9512
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.019)
+  [Edge Pruning] p10.0%→threshold=0.1579 | removed 291/3120 edges (9.3%)
+  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9333
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.012)
+  [Edge Pruning] p10.0%→threshold=0.1266 | removed 339/3650 edges (9.3%)
+  [Defense] Damage 0.012 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9752
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.025)
+  [Edge Pruning] p10.0%→threshold=0.1518 | removed 200/2115 edges (9.5%)
+  [Defense] Damage 0.025 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9351
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1155 | removed 359/3838 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8926
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.044)
+  [Edge Pruning] p10.0%→threshold=0.1215 | removed 454/4755 edges (9.5%)
+  [Defense] Damage 0.044 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9111
+    t=20  base=0.756  atk=0.711  def=0.917
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.054)
+  [Edge Pruning] p10.0%→threshold=0.0980 | removed 384/3959 edges (9.7%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.9201, max Δ‖x‖=21.1246
+  [Graph Reconstruction] k=3 | edges: 3575 → 9790 (+6215 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9531
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1410 | removed 630/7014 edges (9.0%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9119
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1382 | removed 438/4584 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9576
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1225 | removed 486/5124 edges (9.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9375
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.083)
+  [Edge Pruning] p10.0%→threshold=0.1619 | removed 252/2619 edges (9.6%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.8917, max Δ‖x‖=21.9985
+  [Graph Reconstruction] k=3 | edges: 2367 → 6446 (+4079 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9831
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.019)
+  [Edge Pruning] p10.0%→threshold=0.1653 | removed 253/2690 edges (9.4%)
+  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9515
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.047)
+  [Edge Pruning] p10.0%→threshold=0.1719 | removed 17/1168 edges (1.5%)
+  [Defense] Damage 0.047 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9000
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.190)
+  [Edge Pruning] p10.0%→threshold=0.1848 | removed 165/1717 edges (9.6%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.8565, max Δ‖x‖=10.1424
+  [Graph Reconstruction] k=3 | edges: 1552 → 4383 (+2831 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 1.0000
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.038)
+  [Edge Pruning] p10.0%→threshold=0.2137 | removed 423/4541 edges (9.3%)
+  [Defense] Damage 0.038 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9744
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.009)
+  [Edge Pruning] p10.0%→threshold=0.2008 | removed 243/2561 edges (9.5%)
+  [Defense] Damage 0.009 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9519
+    t=30  base=0.841  atk=0.832  def=0.944
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2282 | removed 287/3049 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9504
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.019)
+  [Edge Pruning] p10.0%→threshold=0.2193 | removed 474/4952 edges (9.6%)
+  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9659
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2646 | removed 296/3366 edges (8.8%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9540
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.038)
+  [Edge Pruning] p10.0%→threshold=0.2659 | removed 189/2692 edges (7.0%)
+  [Defense] Damage 0.038 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9314
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.019)
+  [Edge Pruning] p10.0%→threshold=0.3203 | removed 604/6351 edges (9.5%)
+  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9813
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3140 | removed 757/7813 edges (9.7%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9824
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.010)
+  [Edge Pruning] p10.0%→threshold=0.3392 | removed 363/3849 edges (9.4%)
+  [Defense] Damage 0.010 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9192
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3522 | removed 303/3094 edges (9.8%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9801
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3395 | removed 287/2914 edges (9.8%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9322
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3768 | removed 513/5246 edges (9.8%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9087
+    t=40  base=0.898  atk=0.906  def=0.906
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3975 | removed 586/6093 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8982
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3894 | removed 827/8493 edges (9.7%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9581
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3984 | removed 560/5950 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9853
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3948 | removed 527/5551 edges (9.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9874
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3821 | removed 656/6673 edges (9.8%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9959
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4473 | removed 365/3866 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9930
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4023 | removed 498/5748 edges (8.7%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9762
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3826 | removed 294/3284 edges (9.0%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9255
+  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
+  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4244 | removed 246/2587 edges (9.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9895
+  [Viz] Saved → results/figures/temporal_gradient_attack_elliptic.png
+
+  [feature_perturbation] temporal lines …
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 7880 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1727 | removed 892/9164 edges (9.7%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9930
+    t= 1  base=0.658  atk=0.991  def=0.991
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4544 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1779 | removed 505/5241 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9865
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 6621 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1907 | removed 801/8316 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9922
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5693 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1728 | removed 762/8180 edges (9.3%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9792
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 6803 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1807 | removed 831/8623 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9973
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4328 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2166 | removed 492/5242 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9897
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 6048 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.1756 | removed 697/7253 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9167
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4457 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2052 | removed 487/5186 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9440
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4996 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.076)
+  [Edge Pruning] p10.0%→threshold=0.1846 | removed 572/5939 edges (9.6%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=2.0250, max Δ‖x‖=12.5680
+  [Graph Reconstruction] k=3 | edges: 5367 → 13005 (+7638 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8516
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 6727 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2092 | removed 829/8588 edges (9.7%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9845
+    t=10  base=0.873  atk=0.975  def=0.975
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4296 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.043)
+  [Edge Pruning] p10.0%→threshold=0.1823 | removed 446/4656 edges (9.6%)
+  [Defense] Damage 0.043 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9568
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2047 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2196 | removed 200/2213 edges (9.0%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9703
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4528 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.171)
+  [Edge Pruning] p10.0%→threshold=0.2019 | removed 462/4827 edges (9.6%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=2.0122, max Δ‖x‖=14.6088
+  [Graph Reconstruction] k=3 | edges: 4365 → 11421 (+7056 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9130
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2022 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2163 | removed 186/2078 edges (9.0%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9024
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3639 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.080)
+  [Edge Pruning] p10.0%→threshold=0.2208 | removed 354/3823 edges (9.3%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.9221, max Δ‖x‖=9.0057
+  [Graph Reconstruction] k=3 | edges: 3469 → 8665 (+5196 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9187
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2975 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.019)
+  [Edge Pruning] p10.0%→threshold=0.2328 | removed 287/3120 edges (9.2%)
+  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9619
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3385 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.012)
+  [Edge Pruning] p10.0%→threshold=0.2159 | removed 345/3650 edges (9.5%)
+  [Defense] Damage 0.012 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8820
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 1976 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.025)
+  [Edge Pruning] p10.0%→threshold=0.2359 | removed 194/2115 edges (9.2%)
+  [Defense] Damage 0.025 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9221
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3506 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2094 | removed 354/3838 edges (9.2%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8926
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4291 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.044)
+  [Edge Pruning] p10.0%→threshold=0.2079 | removed 454/4755 edges (9.5%)
+  [Defense] Damage 0.044 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9278
+    t=20  base=0.756  atk=0.711  def=0.911
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3537 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.054)
+  [Edge Pruning] p10.0%→threshold=0.1986 | removed 385/3959 edges (9.7%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=2.0998, max Δ‖x‖=21.3379
+  [Graph Reconstruction] k=3 | edges: 3574 → 9208 (+5634 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8438
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5894 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2174 | removed 662/7014 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9119
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4165 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2172 | removed 437/4584 edges (9.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9576
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4592 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2104 | removed 483/5124 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8795
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2314 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.083)
+  [Edge Pruning] p10.0%→threshold=0.2356 | removed 251/2619 edges (9.6%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=2.1124, max Δ‖x‖=22.4012
+  [Graph Reconstruction] k=3 | edges: 2368 → 6140 (+3772 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9746
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2523 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.019)
+  [Edge Pruning] p10.0%→threshold=0.2426 | removed 246/2690 edges (9.1%)
+  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9223
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 1089 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.047)
+  [Edge Pruning] p10.0%→threshold=0.2382 | removed 18/1168 edges (1.5%)
+  [Defense] Damage 0.047 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9000
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 1653 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.190)
+  [Edge Pruning] p10.0%→threshold=0.2666 | removed 116/1717 edges (6.8%)
+  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=2.1304, max Δ‖x‖=10.5920
+  [Graph Reconstruction] k=3 | edges: 1601 → 4161 (+2560 from k-NN)
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9643
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4275 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.038)
+  [Edge Pruning] p10.0%→threshold=0.2698 | removed 437/4541 edges (9.6%)
+  [Defense] Damage 0.038 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9786
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2483 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.009)
+  [Edge Pruning] p10.0%→threshold=0.2585 | removed 244/2561 edges (9.5%)
+  [Defense] Damage 0.009 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9231
+    t=30  base=0.841  atk=0.832  def=0.879
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2816 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.2762 | removed 286/3049 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9504
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4525 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.019)
+  [Edge Pruning] p10.0%→threshold=0.2716 | removed 474/4952 edges (9.6%)
+  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9621
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3151 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3035 | removed 306/3366 edges (9.1%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9540
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2486 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.038)
+  [Edge Pruning] p10.0%→threshold=0.3140 | removed 258/2692 edges (9.6%)
+  [Defense] Damage 0.038 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9314
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5507 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.019)
+  [Edge Pruning] p10.0%→threshold=0.3514 | removed 586/6351 edges (9.2%)
+  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8652
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 6393 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3380 | removed 739/7813 edges (9.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9824
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3306 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.010)
+  [Edge Pruning] p10.0%→threshold=0.3505 | removed 365/3849 edges (9.5%)
+  [Defense] Damage 0.010 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9192
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2891 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3734 | removed 293/3094 edges (9.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8543
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2760 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.3636 | removed 249/2914 edges (8.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9322
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4481 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4085 | removed 506/5246 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9087
+    t=40  base=0.898  atk=0.906  def=0.906
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5342 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4276 | removed 578/6093 edges (9.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8982
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 7140 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4109 | removed 818/8493 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8907
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5063 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4346 | removed 570/5950 edges (9.6%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9853
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4975 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4301 | removed 524/5551 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9874
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5598 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4216 | removed 656/6673 edges (9.8%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9959
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3519 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4780 | removed 368/3866 edges (9.5%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9930
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5121 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4367 | removed 543/5748 edges (9.4%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9762
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2954 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4225 | removed 237/3284 edges (7.2%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.9255
+  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2454 nodes
+  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
+  [Edge Pruning] p10.0%→threshold=0.4542 | removed 238/2587 edges (9.2%)
+  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
+  [Defense] Retraining model on defended graph...
+  [Defense] Defended val acc: 0.8842
+  [Viz] Saved → results/figures/temporal_feature_perturbation_elliptic.png
+  [Viz] Saved → results/figures/accuracy_bar_elliptic.png
+  [Tables] Saved → results/tables/elliptic_results.md
+
+  Phase 7 done in 6m 10s
+
+============================================================
+Total runtime: 6m 50s
+All outputs → results
+============================================================
