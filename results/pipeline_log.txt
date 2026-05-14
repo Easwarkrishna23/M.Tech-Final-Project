@@ -1,4 +1,4 @@
-Pipeline started at 2026-05-14 05:09:15
+Pipeline started at 2026-05-15 00:45:52
 Log → /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/pipeline_log.txt
 
 ============================================================
@@ -37,357 +37,31 @@ Log → /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/pipe
 ============================================================
   PHASE 4+5 — Cora Attacks + Defense
 ============================================================
+  [Cache] Loading Phase 4+5 results from /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/phase45_cache.json
+  [Skip] Phase 4+5 already complete — using cached results
 
-============================================================
-PHASE 4 — Adversarial Attacks on CORA
-============================================================
-
-[Poisoning 1/4] Nettack (low-margin targeting)
-  [Nettack] Attacking 120 high-confidence nodes, 40 perturbations each (gradient-based, JIT-compiled)...
-  Nettack: +2981/-461 edges, 71 feature perturbations, budget=4800
-  [Retrain after Nettack] Training on poisoned graph...
-  [Retrain] Best val acc on poisoned graph: 0.8000
-
-[Poisoning 2/4] DICE Attack (bridge-node targeting)
-  [DICE] Computing betweenness centrality (approx, k=300)...
-  [DICE] 542 bridge nodes identified (bc ≥ 0.0015)
-  [DICE] Budget=2111 edges (40% of 5278), delete=1055, add=1055
-  [DICE] Done: +1055 external edges, -1055 internal edges (bridge-targeted)
-  DICE: +1055/-1055 edges, 0 feature perturbations, budget=2111
-  [Retrain after DICE] Training on poisoned graph...
-  [Retrain] Best val acc on poisoned graph: 0.7020
-
-[Poisoning 3/4] Meta Attack (bilevel approx.)
-  [Meta Attack] Budget=500 edges (35% of 5278), inner_epochs=15, α=0.7, β=0.9
-    step 5/500, score=0.0383, edge=added (376,1358)
-    step 10/500, score=0.0570, edge=added (380,1358)
-    step 15/500, score=0.0660, edge=added (630,458)
-    step 20/500, score=0.0727, edge=added (317,306)
-    step 25/500, score=0.0741, edge=added (389,306)
-    step 30/500, score=0.0721, edge=added (405,1701)
-    step 35/500, score=0.0740, edge=added (366,1358)
-    step 40/500, score=0.0765, edge=added (291,1358)
-    step 45/500, score=0.0751, edge=added (576,963)
-    step 50/500, score=0.0752, edge=added (417,1623)
-    step 55/500, score=0.0738, edge=added (435,1810)
-    step 60/500, score=0.0733, edge=added (224,1701)
-    step 65/500, score=0.0775, edge=added (528,31)
-    step 70/500, score=0.0732, edge=added (225,2182)
-    step 75/500, score=0.0720, edge=added (438,2034)
-    step 80/500, score=0.0719, edge=added (300,2182)
-    step 85/500, score=0.0721, edge=added (164,963)
-    step 90/500, score=0.0729, edge=added (197,1103)
-    step 95/500, score=0.0748, edge=added (548,1701)
-    step 100/500, score=0.0759, edge=added (160,1358)
-    step 105/500, score=0.0738, edge=added (546,963)
-    step 110/500, score=0.0747, edge=added (278,1103)
-    step 115/500, score=0.0774, edge=added (209,1358)
-    step 120/500, score=0.0768, edge=added (394,1810)
-    step 125/500, score=0.0789, edge=added (209,1103)
-    step 130/500, score=0.0794, edge=added (172,1103)
-    step 135/500, score=0.0778, edge=added (1103,34)
-    step 140/500, score=0.0771, edge=added (478,163)
-    step 145/500, score=0.0765, edge=added (517,1042)
-    step 150/500, score=0.0760, edge=added (166,1441)
-    step 155/500, score=0.0757, edge=added (1103,932)
-    step 160/500, score=0.0752, edge=added (634,95)
-    step 165/500, score=0.0748, edge=added (590,1955)
-    step 170/500, score=0.0751, edge=added (287,973)
-    step 175/500, score=0.0745, edge=added (531,24)
-    step 180/500, score=0.0756, edge=added (187,1358)
-    step 185/500, score=0.0747, edge=added (1358,1423)
-    step 190/500, score=0.0747, edge=added (300,95)
-    step 195/500, score=0.0853, edge=added (461,1190)
-    step 200/500, score=0.1020, edge=added (522,88)
-    step 205/500, score=0.1194, edge=added (520,1184)
-    step 210/500, score=0.1228, edge=added (592,88)
-    step 215/500, score=0.1212, edge=added (355,2097)
-    step 220/500, score=0.1178, edge=added (520,458)
-    step 225/500, score=0.1168, edge=added (164,33)
-    step 230/500, score=0.1166, edge=added (1103,1262)
-    step 235/500, score=0.1143, edge=added (520,1441)
-    step 240/500, score=0.1138, edge=added (520,76)
-    step 245/500, score=0.1135, edge=added (489,1527)
-    step 250/500, score=0.1135, edge=added (593,1527)
-    step 255/500, score=0.1129, edge=added (438,2001)
-    step 260/500, score=0.1116, edge=added (345,963)
-    step 265/500, score=0.1103, edge=added (323,2034)
-    step 270/500, score=0.1101, edge=added (260,1692)
-    step 275/500, score=0.1091, edge=added (476,88)
-    step 280/500, score=0.1102, edge=added (458,349)
-    step 285/500, score=0.1129, edge=added (182,1122)
-    step 290/500, score=0.1102, edge=added (1527,1220)
-    step 295/500, score=0.1110, edge=added (398,1527)
-    step 300/500, score=0.1119, edge=added (571,1527)
-    step 305/500, score=0.1150, edge=added (476,1527)
-    step 310/500, score=0.1140, edge=added (304,1441)
-    step 315/500, score=0.1158, edge=added (1527,975)
-    step 320/500, score=0.1162, edge=added (1527,2330)
-    step 325/500, score=0.1153, edge=added (1527,1838)
-    step 330/500, score=0.1144, edge=added (387,963)
-    step 335/500, score=0.1153, edge=added (1527,966)
-    step 340/500, score=0.1136, edge=added (197,2345)
-    step 345/500, score=0.1138, edge=added (388,1372)
-    step 350/500, score=0.1110, edge=added (578,88)
-    step 355/500, score=0.1106, edge=added (504,88)
-    step 360/500, score=0.1106, edge=added (531,1542)
-    step 365/500, score=0.1103, edge=added (606,1542)
-    step 370/500, score=0.1098, edge=added (285,2157)
-    step 375/500, score=0.1105, edge=added (571,88)
-    step 380/500, score=0.1108, edge=added (185,963)
-    step 385/500, score=0.1160, edge=added (576,2001)
-    step 390/500, score=0.1177, edge=added (309,2001)
-    step 395/500, score=0.1173, edge=added (345,2001)
-    step 400/500, score=0.1156, edge=added (963,2225)
-    step 405/500, score=0.1153, edge=added (277,88)
-    step 410/500, score=0.1160, edge=added (272,88)
-    step 415/500, score=0.1147, edge=added (88,860)
-    step 420/500, score=0.1151, edge=added (409,2001)
-    step 425/500, score=0.1137, edge=added (240,2345)
-    step 430/500, score=0.1138, edge=added (574,2122)
-    step 435/500, score=0.1171, edge=added (212,1527)
-    step 440/500, score=0.1136, edge=added (458,130)
-    step 445/500, score=0.1122, edge=added (1441,671)
-    step 450/500, score=0.1120, edge=added (2182,1220)
-    step 455/500, score=0.1128, edge=added (2182,860)
-    step 460/500, score=0.1166, edge=added (603,2182)
-    step 465/500, score=0.1165, edge=added (2182,1309)
-    step 470/500, score=0.1122, edge=added (2182,975)
-    step 475/500, score=0.1108, edge=added (2182,2355)
-    step 480/500, score=0.1099, edge=added (528,1914)
-    step 485/500, score=0.1101, edge=added (1103,756)
-    step 490/500, score=0.1111, edge=added (388,1914)
-    step 495/500, score=0.1121, edge=added (1042,1220)
-    step 500/500, score=0.1162, edge=added (603,1042)
-  Meta Attack: +492/-8 edges, 0 feature perturbations, budget=500
-  [Retrain after Meta Attack] Training on poisoned graph...
-  [Retrain] Best val acc on poisoned graph: 0.7060
-
-[Poisoning 4/4] Random Structure Attack (centrality-guided)
-  [Random Structure] Computing betweenness centrality (approx, k=300)...
-  [Random Structure] Budget=2375 (+1187 add / -1188 remove), bridge-targeted deletion=50%
-  Random Structure: +1184/-1185 edges, 0 feature perturbations, budget=2375
-  [Retrain after Random Structure] Training on poisoned graph...
-  [Retrain] Best val acc on poisoned graph: 0.6940
-
-[Evasion 1/3] Feature Perturbation Attack
-  [Feature Perturbation] ε=0.5, mode=uniform, perturbed 2708 nodes
-  Feature Perturbation: +0/-0 edges, 2708 feature perturbations, budget=2708
-
-[Evasion 2/3] Edge Flip Attack (bridge-node strategy)
-  [Edge Flip] Computing betweenness centrality (approx, k=300)...
-  [Edge Flip] Bridge strategy: top bc=0.1319
-  [Edge Flip] Strategy=bridge, budget=2111
-  Edge Flip: +935/-924 edges, 0 feature perturbations, budget=1989
-
-[Evasion 3/3] Gradient-Based Attack
-  [Gradient Attack] ε=0.15, steps=20, α=0.0075
-  Gradient Attack: +0/-0 edges, 1000 feature perturbations, budget=1000
-
-[Runner] Saved 7 attacked graphs → results/attacked_graphs
-
-[Phase 4 Results]
-  nettack                    acc=0.6810  f1=0.6370  drop=+0.1200
+[Phase 4 Results (cached)]
+  nettack                    acc=0.6800  f1=0.6459  drop=+0.1210
   dice                       acc=0.6980  f1=0.6866  drop=+0.1030
-  meta_attack                acc=0.7870  f1=0.7810  drop=+0.0140
+  meta_attack                acc=0.7960  f1=0.7870  drop=+0.0050
   random_structure           acc=0.7280  f1=0.7176  drop=+0.0730
   feature_perturbation       acc=0.4190  f1=0.1784  drop=+0.3820
   edge_flip                  acc=0.6360  f1=0.6320  drop=+0.1650
   gradient_attack            acc=0.0000  f1=0.0000  drop=+0.8010
 
-============================================================
-PHASE 5 — Dual Defense Pipeline (GNNGUARD + Ontology)
-============================================================
+[Phase 5 Results (cached)]
+  nettack                    acc=0.6860  recovery=5.0%
+  dice                       acc=0.7070  recovery=8.7%
+  meta_attack                acc=0.7870  recovery=N/A
+  random_structure           acc=0.7310  recovery=4.1%
+  feature_perturbation       acc=0.7730  recovery=92.7%
+  edge_flip                  acc=0.6380  recovery=1.2%
+  gradient_attack            acc=0.9070  recovery=113.2%
 
-[Defending against: nettack]
-
-  [Defense Pipeline] nettack (damage=0.120, attack_type=poisoning)
-  --- Defense 1: GNNGUARD ---
-  [GNNGUARD] Layer-0 (features): threshold=0.0000, pruning 0/7798 edges
-  [GNNGUARD] Layer-1 (embeddings): threshold=0.8977, pruning 390/7798 edges
-  [GNNGUARD] Restored MST edges for connectivity
-  [GNNGUARD] Final: 7798 → 7408 edges (5.0% removed)
-  [GNNGUARD] Val acc after defense: 0.7980
-  --- Defense 2: Ontology Self-Healing ---
-  [Ontology] Suspicious edges: 6177/7798 (79.2%, threshold=0.2)
-  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
-  [Ontology] Filtering: 7798 → 5848 edges (25.0% removed)
-  [Ontology] Restored connectivity after filtering
-  [Ontology] Adaptive denoising: k=3 → 6 (ratio=79.2%)
-  [Ontology] 6-step diffusion: mean Δ‖x‖=3.5269
-  [Ontology] Val acc after defense: 0.7720
-  [Defense Summary] Best defense: GNNGUARD (val_acc=0.7980)
-
-[Defending against: dice]
-
-  [Defense Pipeline] dice (damage=0.103, attack_type=poisoning)
-  --- Defense 1: GNNGUARD ---
-  [GNNGUARD] Layer-0 (features): threshold=0.0000, pruning 0/5278 edges
-  [GNNGUARD] Layer-1 (embeddings): threshold=0.8556, pruning 264/5278 edges
-  [GNNGUARD] Restored MST edges for connectivity
-  [GNNGUARD] Final: 5278 → 5014 edges (5.0% removed)
-  [GNNGUARD] Val acc after defense: 0.6960
-  --- Defense 2: Ontology Self-Healing ---
-  [Ontology] Suspicious edges: 3920/5278 (74.3%, threshold=0.2)
-  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
-  [Ontology] Filtering: 5278 → 3958 edges (25.0% removed)
-  [Ontology] Restored connectivity after filtering
-  [Ontology] Adaptive denoising: k=3 → 6 (ratio=74.3%)
-  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3022
-  [Ontology] Val acc after defense: 0.6740
-  [Recovery Boost] Both defenses below baseline (best=0.6960 < 0.8010). Retrying with stronger ontology config...
-  [Ontology] Suspicious edges: 3920/5278 (74.3%, threshold=0.2)
-  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
-  [Ontology] Filtering: 5278 → 3958 edges (25.0% removed)
-  [Ontology] Restored connectivity after filtering
-  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3022
-  [Ontology-Boost] Val acc after defense: 0.6740
-  [Defense Summary] Best defense: GNNGUARD (val_acc=0.6960)
-
-[Defending against: meta_attack]
-
-  [Defense Pipeline] meta_attack (damage=0.014, attack_type=poisoning)
-  --- Defense 1: GNNGUARD ---
-  [GNNGUARD] Layer-0 (features): threshold=0.0000, pruning 0/5762 edges
-  [GNNGUARD] Layer-1 (embeddings): threshold=0.8991, pruning 289/5762 edges
-  [GNNGUARD] Restored MST edges for connectivity
-  [GNNGUARD] Final: 5762 → 5473 edges (5.0% removed)
-  [GNNGUARD] Val acc after defense: 0.7200
-  --- Defense 2: Ontology Self-Healing ---
-  [Ontology] Suspicious edges: 4029/5762 (69.9%, threshold=0.2)
-  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
-  [Ontology] Filtering: 5762 → 4321 edges (25.0% removed)
-  [Ontology] Restored connectivity after filtering
-  [Ontology] Adaptive denoising: k=3 → 6 (ratio=69.9%)
-  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3560
-  [Ontology] Val acc after defense: 0.6960
-  [Recovery Boost] Both defenses below baseline (best=0.7200 < 0.8010). Retrying with stronger ontology config...
-  [Ontology] Suspicious edges: 4029/5762 (69.9%, threshold=0.2)
-  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
-  [Ontology] Filtering: 5762 → 4321 edges (25.0% removed)
-  [Ontology] Restored connectivity after filtering
-  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3560
-  [Ontology-Boost] Val acc after defense: 0.6960
-  [Defense Summary] Best defense: GNNGUARD (val_acc=0.7200)
-
-[Defending against: random_structure]
-
-  [Defense Pipeline] random_structure (damage=0.073, attack_type=poisoning)
-  --- Defense 1: GNNGUARD ---
-  [GNNGUARD] Layer-0 (features): threshold=0.0000, pruning 0/5277 edges
-  [GNNGUARD] Layer-1 (embeddings): threshold=0.8581, pruning 264/5277 edges
-  [GNNGUARD] Restored MST edges for connectivity
-  [GNNGUARD] Final: 5277 → 5013 edges (5.0% removed)
-  [GNNGUARD] Val acc after defense: 0.7120
-  --- Defense 2: Ontology Self-Healing ---
-  [Ontology] Suspicious edges: 3976/5277 (75.3%, threshold=0.2)
-  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
-  [Ontology] Filtering: 5277 → 3957 edges (25.0% removed)
-  [Ontology] Restored connectivity after filtering
-  [Ontology] Adaptive denoising: k=3 → 6 (ratio=75.3%)
-  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3104
-  [Ontology] Val acc after defense: 0.6660
-  [Recovery Boost] Both defenses below baseline (best=0.7120 < 0.8010). Retrying with stronger ontology config...
-  [Ontology] Suspicious edges: 3976/5277 (75.3%, threshold=0.2)
-  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
-  [Ontology] Filtering: 5277 → 3957 edges (25.0% removed)
-  [Ontology] Restored connectivity after filtering
-  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3104
-  [Ontology-Boost] Val acc after defense: 0.6660
-  [Defense Summary] Best defense: GNNGUARD (val_acc=0.7120)
-
-[Defending against: feature_perturbation]
-
-  [Defense Pipeline] feature_perturbation (damage=0.382, attack_type=evasion)
-  --- Defense 1: GNNGUARD ---
-  [GNNGUARD] Layer-0 (features): threshold=0.3369, pruning 264/5278 edges
-  [GNNGUARD] Layer-1 (embeddings): threshold=0.9953, pruning 264/5278 edges
-  [GNNGUARD] Restored MST edges for connectivity
-  [GNNGUARD] Final: 5278 → 4770 edges (9.6% removed)
-  [GNNGUARD] Val acc after defense: 0.6700
-  --- Defense 2: Ontology Self-Healing ---
-  [Ontology] Suspicious edges: 0/5278 (0.0%, threshold=0.2)
-  [Ontology] No significant vulnerability → Feature Denoising only
-  [Ontology] 3-step diffusion: mean Δ‖x‖=6.1123
-  [Ontology] Val acc after defense: 0.7420
-  [Recovery Boost] Both defenses below baseline (best=0.7420 < 0.8010). Retrying with stronger ontology config...
-  [Ontology] Suspicious edges: 0/5278 (0.0%, threshold=0.2)
-  [Ontology] No significant vulnerability → Feature Denoising only
-  [Ontology] 6-step diffusion: mean Δ‖x‖=6.4454
-  [Ontology-Boost] Val acc after defense: 0.7220
-  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.7420)
-
-[Defending against: edge_flip]
-
-  [Defense Pipeline] edge_flip (damage=0.165, attack_type=evasion)
-  --- Defense 1: GNNGUARD ---
-  [GNNGUARD] Layer-0 (features): threshold=0.0000, pruning 0/5289 edges
-  [GNNGUARD] Layer-1 (embeddings): threshold=0.8606, pruning 265/5289 edges
-  [GNNGUARD] Restored MST edges for connectivity
-  [GNNGUARD] Final: 5289 → 5024 edges (5.0% removed)
-  [GNNGUARD] Val acc after defense: 0.7500
-  --- Defense 2: Ontology Self-Healing ---
-  [Ontology] Suspicious edges: 3880/5289 (73.4%, threshold=0.2)
-  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
-  [Ontology] Filtering: 5289 → 3966 edges (25.0% removed)
-  [Ontology] Restored connectivity after filtering
-  [Ontology] Adaptive denoising: k=3 → 6 (ratio=73.4%)
-  [Ontology] 6-step diffusion: mean Δ‖x‖=3.2463
-  [Ontology] Val acc after defense: 0.7380
-  [Recovery Boost] Both defenses below baseline (best=0.7500 < 0.8010). Retrying with stronger ontology config...
-  [Ontology] Suspicious edges: 3880/5289 (73.4%, threshold=0.2)
-  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
-  [Ontology] Filtering: 5289 → 3966 edges (25.0% removed)
-  [Ontology] Restored connectivity after filtering
-  [Ontology] 6-step diffusion: mean Δ‖x‖=3.2463
-  [Ontology-Boost] Val acc after defense: 0.7380
-  [Defense Summary] Best defense: GNNGUARD (val_acc=0.7500)
-
-[Defending against: gradient_attack]
-
-  [Defense Pipeline] gradient_attack (damage=0.801, attack_type=evasion)
-  --- Defense 1: GNNGUARD ---
-  [GNNGUARD] Layer-0 (features): threshold=0.0170, pruning 264/5278 edges
-  [GNNGUARD] Layer-1 (embeddings): threshold=0.6881, pruning 264/5278 edges
-  [GNNGUARD] Restored MST edges for connectivity
-  [GNNGUARD] Final: 5278 → 4780 edges (9.4% removed)
-  [GNNGUARD] Val acc after defense: 0.7820
-  --- Defense 2: Ontology Self-Healing ---
-  [Ontology] Suspicious edges: 3382/5278 (64.1%, threshold=0.2)
-  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
-  [Ontology] Filtering: 5278 → 3958 edges (25.0% removed)
-  [Ontology] Restored connectivity after filtering
-  [Ontology] Adaptive denoising: k=3 → 6 (ratio=64.1%)
-  [Ontology] 6-step diffusion: mean Δ‖x‖=3.5309
-  [Ontology] Val acc after defense: 0.7860
-  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.7860)
-
-[Defense] Saved defended graphs → results/defended_graphs
-
-[Phase 5 Results — Dual Defense Comparison]
-  Attack                     After Atk   GNNGUARD   Ontology       Best    Recovery
-  -------------------------  ---------  ---------  ---------  ---------  ----------
-  nettack                       0.6810     0.6650     0.6770     0.6770       -3.3%
-  dice                          0.6980     0.7070     0.6760     0.7070        8.7%
-  meta_attack                   0.7870     0.7840     0.7600     0.7840  N/A (<5pp)
-  random_structure              0.7280     0.7310     0.6710     0.7310        4.1%
-  feature_perturbation          0.4190     0.7210     0.7730     0.7730       92.7%
-  edge_flip                     0.6360     0.6140     0.6380     0.6380        1.2%
-  gradient_attack               0.0000     0.9070     0.8700     0.9070      113.2%
-
-[Structural Metrics — Attack Impact & Defense Recovery]
-  Attack                       H-Drop    BE-Fit   ΔAssort       CLR   ASR-Glb
-  -------------------------  --------  --------  --------  --------  --------
-  nettack                      0.2883    0.6839   +0.0764    0.0533    0.2130
-  dice                         0.1582    0.6647   +0.0078    0.0795    0.2210
-  meta_attack                  0.0545    0.1160   -0.0178    0.0751    0.0720
-  random_structure             0.1460    0.6362   +0.0138    0.0588    0.1940
-  feature_perturbation         0.0000    0.0000   +0.0000    0.7194    0.6090
-  edge_flip                    0.1442    0.3881   +0.0157    0.1236    0.2710
-  gradient_attack              0.0000    0.0000   +0.0000    0.8700    0.9330
-  [Baseline assortativity: -0.0659]
-  [Cache] Phase 4+5 results saved → /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/phase45_cache.json
-  Phase 4+5 done in 112m 30s
+[Advanced Metrics (cached)]
+  Attack                       H-Drop   ASR-Glb   NbhdEnt↑   EmbDrift
+  meta_attack                  0.0569    0.0130    +0.0121     0.0726
+  nettack                      0.2883    0.1300    +0.2186     0.7708
   [Tables] Saved → results/tables/cora_results.md
 
 ============================================================
@@ -408,7 +82,7 @@ PHASE 5 — Dual Defense Pipeline (GNNGUARD + Ontology)
   [Viz] Saved → results/figures/embeddings_tsne_feature_perturbation_cora.png
   [Embeddings] Running TSNE on 1500 nodes × 64D embeddings …
   [Viz] Saved → results/figures/embeddings_tsne_nettack_cora.png
-  Phase 6 done in 0m 16s
+  Phase 6 done in 0m 18s
 
 ============================================================
   PHASE 7 — Elliptic Temporal Evaluation
@@ -2337,9 +2011,9 @@ PHASE 5 — Dual Defense Pipeline (GNNGUARD + Ontology)
   [Viz] Saved → results/figures/accuracy_bar_elliptic.png
   [Tables] Saved → results/tables/elliptic_results.md
 
-  Phase 7 done in 11m 18s
+  Phase 7 done in 11m 6s
 
 ============================================================
-Total runtime: 124m 13s
+Total runtime: 11m 36s
 All outputs → results
 ============================================================

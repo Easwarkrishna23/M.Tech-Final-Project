@@ -15,7 +15,11 @@ ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT))
 
 from utils.config import cfg
-from utils.metrics import classification_metrics, recovery_rate
+from utils.metrics import (
+    classification_metrics, recovery_rate,
+    neighborhood_entropy, embedding_drift,
+    homophily_drop, attack_success_rate_global,
+)
 from utils.graph_utils import normalize_adjacency
 from datasets.cora_loader import load_cora
 from models.gcn import create_gcn
@@ -45,7 +49,7 @@ def main():
     cora = load_cora(cfg.data_dir)
     model = create_gcn(cfg.model.hidden_dim, cora.num_classes, cfg.model.dropout_rate)
 
-    ckpt = cfg.checkpoints_dir / "gcn_cora_baseline.npz"
+    ckpt = cfg.checkpoints_dir / "gcn_cora_baseline"
     template = _init_params(model, cora)
     params = load_params(template, str(ckpt))
 
@@ -118,6 +122,26 @@ def main():
                  train_mask=g.train_mask, val_mask=g.val_mask,
                  test_mask=g.test_mask)
 
+    # ── Advanced metrics (computed before cache patch so values are available) ──
+    emb_clean_np, clean_preds, _ = predict(model, params, cora)
+    emb_atk_np,   atk_preds2,  _ = predict(model, params, perturbed)
+    emb_clean_np   = np.array(emb_clean_np)
+    emb_atk_np     = np.array(emb_atk_np)
+    clean_preds_np = np.array(clean_preds)
+    atk_preds2_np  = np.array(atk_preds2)
+
+    h_drop    = homophily_drop(cora.adj, perturbed.adj, cora.labels)
+    asr_g     = attack_success_rate_global(cora.labels, clean_preds_np, atk_preds2_np, mask=cora.test_mask)
+    ent_clean = neighborhood_entropy(cora.adj,      cora.labels, cora.num_classes, cora.test_mask)
+    ent_atk   = neighborhood_entropy(perturbed.adj, cora.labels, cora.num_classes, cora.test_mask)
+    drift     = embedding_drift(emb_clean_np, emb_atk_np, cora.test_mask)
+
+    print(f"\n  Advanced Metrics:")
+    print(f"    ASR (global):         {asr_g:.4f}  ({asr_g:.1%} of test nodes flipped)")
+    print(f"    Homophily Drop:       {h_drop:.4f}")
+    print(f"    Neighborhood Entropy: {ent_clean:.4f} (clean) → {ent_atk:.4f} (attacked)  Δ={ent_atk-ent_clean:+.4f}")
+    print(f"    Embedding Drift:      {drift:.4f}  (mean L2 in latent space)")
+
     # ── Patch cache ───────────────────────────────────────────────────────────
     if not CACHE_FILE.exists():
         print("  WARNING: no cache file found — run the full pipeline first.")
@@ -130,6 +154,16 @@ def main():
     cache["defended_metrics"]["nettack"] = {k: float(v) for k, v in best_m.items()}
     cache["defended_accs_gnnguard"]["nettack"]  = float(gg_m["accuracy"])
     cache["defended_accs_ontology"]["nettack"]  = float(ont_m["accuracy"])
+    if "advanced_metrics" not in cache:
+        cache["advanced_metrics"] = {}
+    cache["advanced_metrics"]["nettack"] = {
+        "homophily_drop":   float(h_drop),
+        "asr_global":       float(asr_g),
+        "entropy_clean":    float(ent_clean),
+        "entropy_attacked": float(ent_atk),
+        "entropy_delta":    float(ent_atk - ent_clean),
+        "embedding_drift":  float(drift),
+    }
     CACHE_FILE.write_text(json.dumps(cache, indent=2))
     print(f"\n  Cache patched → {CACHE_FILE}")
 

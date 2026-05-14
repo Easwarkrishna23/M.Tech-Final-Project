@@ -1,17 +1,17 @@
 {
   "attack_accs": {
-    "nettack": 0.681,
+    "nettack": 0.68,
     "dice": 0.698,
-    "meta_attack": 0.787,
+    "meta_attack": 0.796,
     "random_structure": 0.728,
     "feature_perturbation": 0.419,
     "edge_flip": 0.636,
     "gradient_attack": 0.0
   },
   "defended_accs": {
-    "nettack": 0.677,
+    "nettack": 0.686,
     "dice": 0.707,
-    "meta_attack": 0.784,
+    "meta_attack": 0.787,
     "random_structure": 0.731,
     "feature_perturbation": 0.773,
     "edge_flip": 0.638,
@@ -19,10 +19,10 @@
   },
   "attack_metrics": {
     "nettack": {
-      "accuracy": 0.681,
-      "precision": 0.6333244680920621,
-      "recall": 0.6458070082476156,
-      "f1": 0.6369779917186342
+      "accuracy": 0.68,
+      "precision": 0.6367406903837073,
+      "recall": 0.6620203575408984,
+      "f1": 0.6459021777506031
     },
     "dice": {
       "accuracy": 0.698,
@@ -31,10 +31,10 @@
       "f1": 0.6866013693796872
     },
     "meta_attack": {
-      "accuracy": 0.787,
-      "precision": 0.7660867773710036,
-      "recall": 0.8037799189439448,
-      "f1": 0.7809754030544239
+      "accuracy": 0.796,
+      "precision": 0.7724425458180469,
+      "recall": 0.8137674670831022,
+      "f1": 0.7869548633727883
     },
     "random_structure": {
       "accuracy": 0.728,
@@ -63,10 +63,10 @@
   },
   "defended_metrics": {
     "nettack": {
-      "accuracy": 0.677,
-      "precision": 0.6463560786258762,
-      "recall": 0.6597035116489415,
-      "f1": 0.6495151724483799
+      "accuracy": 0.686,
+      "precision": 0.6407368317123862,
+      "recall": 0.6558838597111027,
+      "f1": 0.6457377812915984
     },
     "dice": {
       "accuracy": 0.707,
@@ -75,10 +75,10 @@
       "f1": 0.6904874314592183
     },
     "meta_attack": {
-      "accuracy": 0.784,
-      "precision": 0.758930184537033,
-      "recall": 0.8012363712729978,
-      "f1": 0.7747997630983239
+      "accuracy": 0.787,
+      "precision": 0.7653256933144755,
+      "recall": 0.8014309613355913,
+      "f1": 0.7785532266664463
     },
     "random_structure": {
       "accuracy": 0.731,
@@ -106,9 +106,9 @@
     }
   },
   "defended_accs_gnnguard": {
-    "nettack": 0.665,
+    "nettack": 0.686,
     "dice": 0.707,
-    "meta_attack": 0.784,
+    "meta_attack": 0.787,
     "random_structure": 0.731,
     "feature_perturbation": 0.721,
     "edge_flip": 0.614,
@@ -117,10 +117,28 @@
   "defended_accs_ontology": {
     "nettack": 0.677,
     "dice": 0.676,
-    "meta_attack": 0.76,
+    "meta_attack": 0.75,
     "random_structure": 0.671,
     "feature_perturbation": 0.773,
     "edge_flip": 0.638,
     "gradient_attack": 0.87
+  },
+  "advanced_metrics": {
+    "meta_attack": {
+      "homophily_drop": 0.05693086322100638,
+      "asr_global": 0.013,
+      "entropy_clean": 0.22470261144761183,
+      "entropy_attacked": 0.2367911466004457,
+      "entropy_delta": 0.012088535152833868,
+      "embedding_drift": 0.07262285053730011
+    },
+    "nettack": {
+      "homophily_drop": 0.2882936725257037,
+      "asr_global": 0.13,
+      "entropy_clean": 0.22470261144761183,
+      "entropy_attacked": 0.4432762530359184,
+      "entropy_delta": 0.21857364158830656,
+      "embedding_drift": 0.7707719206809998
+    }
   }
 }

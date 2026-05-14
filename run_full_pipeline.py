@@ -18,6 +18,7 @@ Checkpoints are saved after each phase so the pipeline can be re-run
 from any phase by commenting out earlier phases.
 """
 import sys
+import json
 import time
 import traceback
 import numpy as np
@@ -169,15 +170,17 @@ CACHE_FILE = ROOT / "results" / "phase45_cache.json"
 
 
 def _save_cache(attack_accs, defended_accs, attack_metrics, defended_metrics,
-                defended_accs_gg=None, defended_accs_ont=None):
+                defended_accs_gg=None, defended_accs_ont=None,
+                advanced_metrics=None):
     import json
     cache = {
-        "attack_accs":       attack_accs,
-        "defended_accs":     defended_accs,
-        "attack_metrics":    attack_metrics,
-        "defended_metrics":  defended_metrics,
-        "defended_accs_gnnguard":  defended_accs_gg  or {},
-        "defended_accs_ontology":  defended_accs_ont or {},
+        "attack_accs":            attack_accs,
+        "defended_accs":          defended_accs,
+        "attack_metrics":         attack_metrics,
+        "defended_metrics":       defended_metrics,
+        "defended_accs_gnnguard": defended_accs_gg  or {},
+        "defended_accs_ontology": defended_accs_ont or {},
+        "advanced_metrics":       advanced_metrics  or {},
     }
     CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
     CACHE_FILE.write_text(json.dumps(cache, indent=2))
@@ -191,7 +194,8 @@ def _load_cache():
     cache = json.loads(CACHE_FILE.read_text())
     print(f"  [Cache] Loading Phase 4+5 results from {CACHE_FILE}")
     return (cache["attack_accs"], cache["defended_accs"],
-            cache["attack_metrics"], cache["defended_metrics"])
+            cache["attack_metrics"], cache["defended_metrics"],
+            cache.get("advanced_metrics", {}))
 
 
 def phase45(cora, cora_model, cora_params, baseline_acc):
@@ -200,7 +204,7 @@ def phase45(cora, cora_model, cora_params, baseline_acc):
     # Return cached results if all attacked/defended graphs already exist
     cached = _load_cache()
     if cached is not None:
-        attack_accs, defended_accs, attack_metrics, defended_metrics = cached
+        attack_accs, defended_accs, attack_metrics, defended_metrics, adv_metrics = cached
         print("  [Skip] Phase 4+5 already complete — using cached results")
         print("\n[Phase 4 Results (cached)]")
         for atk, m in attack_metrics.items():
@@ -211,6 +215,14 @@ def phase45(cora, cora_model, cora_params, baseline_acc):
             rr = recovery_rate(baseline_acc, attack_accs[atk], defended_accs[atk])
             rr_str = f"{rr:.1%}" if rr is not None else "N/A"
             print(f"  {atk:25s}  acc={defended_accs[atk]:.4f}  recovery={rr_str}")
+        if adv_metrics:
+            print("\n[Advanced Metrics (cached)]")
+            print(f"  {'Attack':25s}  {'H-Drop':>8}  {'ASR-Glb':>8}  {'NbhdEnt↑':>9}  {'EmbDrift':>9}")
+            for atk, am in adv_metrics.items():
+                print(f"  {atk:25s}  {am.get('homophily_drop',0):8.4f}  "
+                      f"{am.get('asr_global',0):8.4f}  "
+                      f"{am.get('entropy_delta',0):+9.4f}  "
+                      f"{am.get('embedding_drift',0):9.4f}")
         return None, None, attack_accs, defended_accs, attack_metrics, defended_metrics
 
     t0 = time.time()
@@ -288,41 +300,65 @@ def phase45(cora, cora_model, cora_params, baseline_acc):
 
     # ── Structural metrics (proves superiority over GNNGUARD baseline) ───────
     print("\n[Structural Metrics — Attack Impact & Defense Recovery]")
-    print(f"  {'Attack':25s}  {'H-Drop':>8}  {'BE-Fit':>8}  "
-          f"{'ΔAssort':>8}  {'CLR':>8}  {'ASR-Glb':>8}")
-    print(f"  {'-'*25}  {'-'*8}  {'-'*8}  {'-'*8}  {'-'*8}  {'-'*8}")
+    print(f"  {'Attack':25s}  {'H-Drop':>8}  {'BE-Fit':>8}  {'ΔAssort':>8}  "
+          f"{'CLR':>8}  {'ASR-Glb':>8}  {'NbhdEnt↑':>9}  {'EmbDrift':>9}")
+    print(f"  {'-'*25}  {'-'*8}  {'-'*8}  {'-'*8}  "
+          f"{'-'*8}  {'-'*8}  {'-'*9}  {'-'*9}")
 
     assort_clean = assortativity_coefficient(cora.adj)
-    _, clean_preds, _ = predict(cora_model, cora_params, cora)
-    clean_preds_np = np.array(clean_preds)
+    emb_clean, clean_preds, _ = predict(cora_model, cora_params, cora)
+    clean_preds_np  = np.array(clean_preds)
+    emb_clean_np    = np.array(emb_clean)
+    ent_clean = neighborhood_entropy(cora.adj, cora.labels, cora.num_classes, cora.test_mask)
+
+    advanced_metrics = {}   # saved to cache and written to MD
 
     for atk_name, ea in attack_results.items():
         atk_graph = ea.attack_result.perturbed_graph
         dr        = defense_results[atk_name]
 
-        h_drop  = homophily_drop(cora.adj, atk_graph.adj, cora.labels)
-        be_fit  = bose_einstein_fitness(cora.adj, atk_graph.adj)
+        h_drop     = homophily_drop(cora.adj, atk_graph.adj, cora.labels)
+        be_fit     = bose_einstein_fitness(cora.adj, atk_graph.adj)
         assort_atk = assortativity_coefficient(atk_graph.adj)
 
-        _, atk_preds_s, _ = predict(cora_model, ea.eval_params, atk_graph)
-        _, def_preds_s, _ = predict(cora_model, dr.defended_params, dr.defended_graph)
+        emb_atk, atk_preds_s, _ = predict(cora_model, ea.eval_params, atk_graph)
+        _,        def_preds_s, _ = predict(cora_model, dr.defended_params, dr.defended_graph)
         atk_preds_np = np.array(atk_preds_s)
         def_preds_np = np.array(def_preds_s)
+        emb_atk_np   = np.array(emb_atk)
 
-        clr = clean_label_recovery(
+        clr       = clean_label_recovery(
             cora.labels, atk_preds_np, def_preds_np, mask=cora.test_mask
         )
-        asr_g = attack_success_rate_global(
+        asr_g     = attack_success_rate_global(
             cora.labels, clean_preds_np, atk_preds_np, mask=cora.test_mask
         )
+        ent_atk   = neighborhood_entropy(
+            atk_graph.adj, cora.labels, cora.num_classes, cora.test_mask
+        )
+        emb_drift = embedding_drift(emb_clean_np, emb_atk_np, cora.test_mask)
+
+        advanced_metrics[atk_name] = {
+            "homophily_drop":    float(h_drop),
+            "bose_einstein_fit": float(be_fit),
+            "assort_delta":      float(assort_atk - assort_clean),
+            "clean_label_recovery": float(clr),
+            "asr_global":        float(asr_g),
+            "entropy_clean":     float(ent_clean),
+            "entropy_attacked":  float(ent_atk),
+            "entropy_delta":     float(ent_atk - ent_clean),
+            "embedding_drift":   float(emb_drift),
+        }
 
         print(f"  {atk_name:25s}  {h_drop:8.4f}  {be_fit:8.4f}  "
-              f"{assort_atk - assort_clean:+8.4f}  {clr:8.4f}  {asr_g:8.4f}")
+              f"{assort_atk - assort_clean:+8.4f}  {clr:8.4f}  {asr_g:8.4f}  "
+              f"{ent_atk - ent_clean:+9.4f}  {emb_drift:9.4f}")
 
-    print(f"  [Baseline assortativity: {assort_clean:+.4f}]")
+    print(f"  [Baseline assortativity: {assort_clean:+.4f}  "
+          f"Baseline neighborhood entropy: {ent_clean:.4f}]")
 
     _save_cache(attack_accs, defended_accs, attack_metrics, defended_metrics,
-                defended_accs_gg, defended_accs_ont)
+                defended_accs_gg, defended_accs_ont, advanced_metrics)
     print(f"  Phase 4+5 done in {_elapsed(t0)}")
     return attack_results, defense_results, attack_accs, defended_accs, attack_metrics, defended_metrics
 
@@ -660,7 +696,8 @@ def _write_elliptic_md(baseline_acc, attack_accs, defended_accs, baseline_accs_t
 # ─────────────────────────────────────────────────────────────────────────────
 
 def write_cora_results_md(baseline_acc, attack_accs, defended_accs,
-                           attack_metrics, defended_metrics):
+                           attack_metrics, defended_metrics,
+                           advanced_metrics=None):
     cfg.tables_dir.mkdir(parents=True, exist_ok=True)
     fpath = cfg.tables_dir / "cora_results.md"
     lines = [
@@ -688,6 +725,25 @@ def write_cora_results_md(baseline_acc, attack_accs, defended_accs,
         lines.append(
             f"| {atk} | {attack_accs[atk]:.4f} | {defended_accs[atk]:.4f} | {rr_str} |"
         )
+
+    if advanced_metrics:
+        lines += [
+            "", "## Advanced Metrics", "",
+            "| Attack | H-Drop | BE-Fitness | ΔAssortativity | CLR | ASR-Global | NbhdEntropy↑ | EmbDrift |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- |",
+        ]
+        for atk, am in advanced_metrics.items():
+            lines.append(
+                f"| {atk} "
+                f"| {am.get('homophily_drop', 0):.4f} "
+                f"| {am.get('bose_einstein_fit', 0):.4f} "
+                f"| {am.get('assort_delta', 0):+.4f} "
+                f"| {am.get('clean_label_recovery', 0):.4f} "
+                f"| {am.get('asr_global', 0):.4f} "
+                f"| {am.get('entropy_delta', 0):+.4f} "
+                f"| {am.get('embedding_drift', 0):.4f} |"
+            )
+
     fpath.write_text("\n".join(lines))
     print(f"  [Tables] Saved → {fpath}")
 
@@ -725,8 +781,10 @@ def main():
         )
 
         # Write Cora results table
+        adv_metrics = json.loads(CACHE_FILE.read_text()).get("advanced_metrics", {}) \
+            if CACHE_FILE.exists() else {}
         write_cora_results_md(baseline_acc, attack_accs, defended_accs,
-                              attack_metrics, defended_metrics)
+                              attack_metrics, defended_metrics, adv_metrics)
 
         # Phase 6 (Cora visualizations)
         # Re-run training to get loss curves if not loaded from checkpoint

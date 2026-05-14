@@ -105,9 +105,12 @@ def meta_attack(
 
     # Momentum accumulator — smooths gradient estimates over steps
     momentum = np.zeros((n, n), dtype=np.float32)
-    # No-flip-back: track which edges were flipped to prevent oscillation.
-    # Without this, the attack wastes steps toggling the same edge back and forth.
-    flipped_edges: set = set()
+    # Cooldown guard: an edge can be re-flipped only after COOLDOWN steps.
+    # This prevents short oscillations (the bug with no-flip-back: permanent ban
+    # exhausted good candidates and wasted late steps on weak edges) while still
+    # letting the attack revisit important edges once momentum has re-scored them.
+    COOLDOWN = 50
+    flip_last_step: dict = {}   # (i,j) -> step when last flipped
 
     for step in range(budget):
         a_hat = jnp.array(normalize_adjacency(adj))
@@ -123,10 +126,11 @@ def meta_attack(
         scores   = momentum * flip_dir
         np.fill_diagonal(scores, -np.inf)
 
-        # Mask out previously flipped edges to prevent oscillation
-        for (fi, fj) in flipped_edges:
-            scores[fi, fj] = -np.inf
-            scores[fj, fi] = -np.inf
+        # Block edges still in cooldown
+        for (fi, fj), last in flip_last_step.items():
+            if step - last < COOLDOWN:
+                scores[fi, fj] = -np.inf
+                scores[fj, fi] = -np.inf
 
         best  = int(np.argmax(scores))
         i_e, j_e = best // n, best % n
@@ -134,7 +138,7 @@ def meta_attack(
         if scores[i_e, j_e] > -np.inf:
             adj[i_e, j_e] = 1.0 - adj[i_e, j_e]
             adj[j_e, i_e] = adj[i_e, j_e]
-            flipped_edges.add((min(i_e, j_e), max(i_e, j_e)))
+            flip_last_step[(min(i_e, j_e), max(i_e, j_e))] = step
 
         # Inner-loop warm retrain on current perturbed graph
         a_hat_new = jnp.array(normalize_adjacency(adj))
@@ -142,8 +146,12 @@ def meta_attack(
             state, _ = train_step(state, model, x_j, a_hat_new, lbl, tr_mask)
 
         if (step + 1) % 5 == 0:
+            active_cooldowns = sum(
+                1 for last in flip_last_step.values() if step - last < COOLDOWN
+            )
             print(f"    step {step+1}/{budget}, score={scores[i_e,j_e]:.4f}, "
-                  f"edge={'added' if adj[i_e,j_e]==1 else 'removed'} ({i_e},{j_e})")
+                  f"edge={'added' if adj[i_e,j_e]==1 else 'removed'} ({i_e},{j_e}), "
+                  f"cooldown_active={active_cooldowns}")
 
     perturbed = graph.copy()
     perturbed = perturbed.update_adj(adj)

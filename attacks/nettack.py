@@ -105,15 +105,25 @@ def nettack(
         order = np.argsort(-margins)   # descending: highest-confidence first
         target_nodes = correct_idx[order][:target_count]
 
-    print(f"  [Nettack] Attacking {len(target_nodes)} high-confidence nodes, "
+    import time as _time
+    n_targets = len(target_nodes)
+    print(f"  [Nettack] Attacking {n_targets} high-confidence nodes, "
           f"{n_perturbations} perturbations each "
           f"(gradient-based, JIT-compiled)...")
+    t_start = _time.time()
 
-    for v in target_nodes:
+    for idx, v in enumerate(target_nodes):
         adj, feats = _attack_single_node(
             v, adj, feats, labels, model, params, n_perturbations,
             direct_attack, _grad_adj_jit, _grad_feat_jit,
         )
+        if (idx + 1) % 10 == 0 or (idx + 1) == n_targets:
+            elapsed = int(_time.time() - t_start)
+            rate = (idx + 1) / max(elapsed, 1)
+            remaining = int((n_targets - idx - 1) / max(rate, 1e-6))
+            print(f"    [{idx+1:3d}/{n_targets}] node={v}  "
+                  f"elapsed={elapsed//60}m{elapsed%60:02d}s  "
+                  f"eta={remaining//60}m{remaining%60:02d}s")
 
     perturbed = graph.copy()
     perturbed = perturbed.update_adj(adj)
