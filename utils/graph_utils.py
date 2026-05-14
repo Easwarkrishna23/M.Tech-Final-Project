@@ -15,8 +15,9 @@ def normalize_adjacency(adj: np.ndarray | sp.spmatrix) -> np.ndarray:
     adj_hat = adj + np.eye(n, dtype=np.float32)   # A + I (self-loops)
     degree = adj_hat.sum(axis=1)
     d_inv_sqrt = np.where(degree > 0, 1.0 / np.sqrt(degree), 0.0)
-    D = np.diag(d_inv_sqrt)
-    return D @ adj_hat @ D
+    # Element-wise scaling: (D^{-1/2} @ A_hat @ D^{-1/2})[i,j] = d[i]*A[i,j]*d[j]
+    # Equivalent to D @ adj_hat @ D but O(N²) instead of O(N³).
+    return d_inv_sqrt[:, None] * adj_hat * d_inv_sqrt[None, :]
 
 
 def sparse_to_dense(edge_index: np.ndarray, num_nodes: int,

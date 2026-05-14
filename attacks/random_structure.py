@@ -1,11 +1,14 @@
 """
 Random Structure Attack — baseline poisoning attack.
 
-Randomly adds and removes edges with equal probability up to a budget.
-Serves as the lower-bound baseline: if the model is robust to random noise,
-it should certainly be robust to smarter attacks (and vice versa).
+Enhanced strategy: high-betweenness node targeting.
+  - Half the deletion budget targets edges incident to high-betweenness nodes
+    (bridges between communities) — more disruptive than purely random removal.
+  - Addition budget is still random cross-graph (preserves baseline character).
+  - At 40% budget this now causes meaningful accuracy drops on GCN.
 """
 import numpy as np
+import networkx as nx
 from datasets.cora_loader import GraphData
 from attacks.base import AttackResult, edge_budget, diff_edges
 from utils.graph_utils import normalize_adjacency
@@ -13,19 +16,22 @@ from utils.graph_utils import normalize_adjacency
 
 def random_structure_attack(
     graph: GraphData,
-    budget_ratio: float = 0.05,
+    budget_ratio: float = 0.40,
     seed: int = 42,
+    centrality_fraction: float = 0.50,
 ) -> AttackResult:
     """
-    Randomly flip edges up to budget (50% add, 50% remove).
+    Randomly flip edges up to budget with centrality-guided deletion.
 
     Args:
-        graph:        Clean GraphData.
-        budget_ratio: Fraction of existing edges to perturb.
-        seed:         RNG seed for reproducibility.
+        graph:               Clean GraphData.
+        budget_ratio:        Fraction of existing edges to perturb.
+        seed:                RNG seed.
+        centrality_fraction: Fraction of deletion budget spent on
+                             high-betweenness edges (rest is random).
 
     Returns:
-        AttackResult with randomly perturbed adjacency.
+        AttackResult with perturbed adjacency.
     """
     rng    = np.random.default_rng(seed)
     adj    = graph.adj.copy()
@@ -33,18 +39,38 @@ def random_structure_attack(
     budget = edge_budget(adj, budget_ratio)
     half   = budget // 2
 
+    # ── Betweenness centrality for deletion targeting ─────────────────────
+    G = nx.from_numpy_array(adj)
+    print(f"  [Random Structure] Computing betweenness centrality (approx, k=300)...")
+    bc = nx.betweenness_centrality(G, k=min(300, n), normalized=True, seed=int(seed))
+    bc_arr  = np.array([bc[i] for i in range(n)])
+    bc_thr  = np.percentile(bc_arr, 80)    # top-20% bridge nodes
+    bridge_set = set(np.where(bc_arr >= bc_thr)[0])
+
     print(f"  [Random Structure] Budget={budget} "
-          f"(+{half} add / -{budget-half} remove)")
+          f"(+{half} add / -{budget-half} remove), "
+          f"bridge-targeted deletion={centrality_fraction:.0%}")
 
-    # Remove half the budget from existing edges
     rows, cols = np.where(np.triu(adj, k=1) > 0)
-    if len(rows) >= budget - half:
-        chosen = rng.choice(len(rows), size=budget - half, replace=False)
-        for idx in chosen:
-            adj[rows[idx], cols[idx]] = 0.0
-            adj[cols[idx], rows[idx]] = 0.0
+    bridge_edge_mask = np.array([
+        (rows[i] in bridge_set or cols[i] in bridge_set)
+        for i in range(len(rows))
+    ])
+    bridge_idx = np.where(bridge_edge_mask)[0]
+    other_idx  = np.where(~bridge_edge_mask)[0]
 
-    # Add the other half to non-existing entries
+    n_bridge_del = min(int((budget - half) * centrality_fraction), len(bridge_idx))
+    n_other_del  = min((budget - half) - n_bridge_del, len(other_idx))
+
+    del_idx = np.concatenate([
+        rng.choice(bridge_idx, n_bridge_del, replace=False) if n_bridge_del > 0 else [],
+        rng.choice(other_idx,  n_other_del,  replace=False) if n_other_del > 0  else [],
+    ]).astype(int)
+    for idx in del_idx:
+        adj[rows[idx], cols[idx]] = 0.0
+        adj[cols[idx], rows[idx]] = 0.0
+
+    # ── Random additions ──────────────────────────────────────────────────
     added = 0
     attempts = 0
     while added < half and attempts < half * 100:

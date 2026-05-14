@@ -73,35 +73,37 @@ def run_all_attacks(
     print(f"PHASE 4 — Adversarial Attacks on {graph.name.upper()}")
     print(f"{'='*60}")
 
-    # ── Poisoning Attack 1: Nettack (margin-based) ───────────────
-    print("\n[Poisoning 1/4] Nettack (margin scoring)")
+    # ── Poisoning Attack 1: Nettack (margin-based, low-margin targeting) ─
+    print("\n[Poisoning 1/4] Nettack (low-margin targeting)")
     r = nettack(graph, model, clean_params,
                 n_perturbations=attack_cfg.nettack_n_perturbations,
+                target_count=attack_cfg.nettack_target_count,
                 direct_attack=attack_cfg.nettack_direct)
     print(f"  {r.summary()}")
     poisoned_params = _retrain(r.perturbed_graph, model, model_cfg, seed, "Nettack")
     results["nettack"] = EvaluatedAttack(r, "poisoning", poisoned_params, retrained=True)
 
-    # ── Poisoning Attack 2: DICE ──────────────────────────────────
-    print("\n[Poisoning 2/4] DICE Attack")
+    # ── Poisoning Attack 2: DICE (bridge-node targeting) ─────────
+    print("\n[Poisoning 2/4] DICE Attack (bridge-node targeting)")
     r = dice_attack(graph, model, clean_params,
-                    budget_ratio=attack_cfg.meta_budget_ratio,
+                    budget_ratio=attack_cfg.dice_budget_ratio,
                     seed=seed)
     print(f"  {r.summary()}")
     poisoned_params = _retrain(r.perturbed_graph, model, model_cfg, seed, "DICE")
     results["dice"] = EvaluatedAttack(r, "poisoning", poisoned_params, retrained=True)
 
-    # ── Poisoning Attack 3: Meta Attack (with inner-loop retrain) ─
+    # ── Poisoning Attack 3: Meta Attack (bilevel approx., 50 inner epochs) ─
     print("\n[Poisoning 3/4] Meta Attack (bilevel approx.)")
     r = meta_attack(graph, model, clean_params,
                     budget_ratio=attack_cfg.meta_budget_ratio,
-                    n_steps=attack_cfg.meta_epochs)
+                    n_steps=attack_cfg.meta_epochs,
+                    inner_epochs=attack_cfg.meta_inner_epochs)
     print(f"  {r.summary()}")
     poisoned_params = _retrain(r.perturbed_graph, model, model_cfg, seed, "Meta Attack")
     results["meta_attack"] = EvaluatedAttack(r, "poisoning", poisoned_params, retrained=True)
 
-    # ── Poisoning Attack 4: Random Structure ──────────────────────
-    print("\n[Poisoning 4/4] Random Structure Attack")
+    # ── Poisoning Attack 4: Random Structure (centrality-guided) ──
+    print("\n[Poisoning 4/4] Random Structure Attack (centrality-guided)")
     r = random_structure_attack(graph,
                                 budget_ratio=attack_cfg.random_budget_ratio,
                                 seed=seed)
@@ -115,9 +117,10 @@ def run_all_attacks(
     print(f"  {r.summary()}")
     results["feature_perturbation"] = EvaluatedAttack(r, "evasion", clean_params, retrained=False)
 
-    # ── Evasion Attack 2: Edge Flip ───────────────────────────────
-    print("\n[Evasion 2/3] Edge Flip Attack")
-    r = edge_flip_attack(graph, budget_ratio=attack_cfg.edge_flip_budget_ratio, seed=seed)
+    # ── Evasion Attack 2: Edge Flip (bridge-node strategy) ────────
+    print("\n[Evasion 2/3] Edge Flip Attack (bridge-node strategy)")
+    r = edge_flip_attack(graph, budget_ratio=attack_cfg.edge_flip_budget_ratio,
+                         strategy="bridge", seed=seed)
     print(f"  {r.summary()}")
     results["edge_flip"] = EvaluatedAttack(r, "evasion", clean_params, retrained=False)
 

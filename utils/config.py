@@ -16,39 +16,69 @@ class ModelConfig:
 
 @dataclass
 class AttackConfig:
-    # Nettack — increased perturbations per node for stronger targeted impact
-    nettack_n_perturbations: int = 20
+    # Nettack — 120 HIGH-confidence targets + 40 perturbs each
+    nettack_n_perturbations: int = 40   # was 20 — doubled for stronger impact
+    nettack_target_count: int = 120     # was 80 — attack more test nodes
     nettack_direct: bool = True
 
-    # Meta Attack — 20% budget drives accuracy into 40-60% range
-    meta_epochs: int = 200
+    # Meta Attack — combined train+val loss + momentum; larger budget
+    meta_epochs: int = 500
     meta_lr: float = 0.1
-    meta_budget_ratio: float = 0.20
+    meta_budget_ratio: float = 0.35
+    meta_inner_epochs: int = 40         # 15 was too short (chaotic gradients), 75 was too long (stale)
 
-    # Random Structure — 25% budget for strong baseline attack
-    random_budget_ratio: float = 0.25
+    # DICE — 40% budget + aggressive bridge targeting
+    dice_budget_ratio: float = 0.40     # was 0.35
+
+    # Random Structure — 45% budget, targets high-betweenness nodes
+    random_budget_ratio: float = 0.45   # was 0.40
 
     # Feature Perturbation — ε=0.5 drives ~40% accuracy drop on Cora BoW features
     feature_epsilon: float = 0.5
 
-    # Edge Flip — 20% budget to match structural attack strength
-    edge_flip_budget_ratio: float = 0.20
+    # Edge Flip — 40% budget + cross-class bias at bridge positions
+    edge_flip_budget_ratio: float = 0.40   # was 0.35
 
-    # Gradient-Based — ε=0.15 lands in 40-60% drop range (ε=0.3 was too extreme at 0%)
+    # Gradient-Based — ε=0.15
     grad_epsilon: float = 0.15
     grad_steps: int = 20
 
 
 @dataclass
-class DefenseConfig:
-    # Edge Pruning — percentile-based: remove bottom prune_pct% of edges by cosine sim
-    # This is dataset-agnostic (works regardless of absolute sim values)
-    prune_percentile: float = 10.0    # remove bottom 10% least-similar edges
-    cosine_threshold: float = 0.0     # fallback fixed threshold (used if prune_percentile=0)
-    min_edges_ratio: float = 0.7      # keep at least 70% of original edges
+class GNNGuardConfig:
+    """GNNGUARD defense configuration (Zhang & Zitnik, NeurIPS 2020)."""
+    # Edge similarity threshold P0: prune edges with cosine(h_u, h_v) < p0
+    p0: float = 0.05                  # conservative — only prune clearly dissimilar edges
+    use_embedding_sim: bool = True    # True=layer-1 embeddings, False=raw features
+    min_edges_ratio: float = 0.60     # keep at least 60% of original edges
+    layer_wise: bool = True           # apply per-layer pruning (as in original paper)
 
-    # Graph Reconstruction (k-NN)
+
+@dataclass
+class OntologyDefenseConfig:
+    """Ontology-Driven Self-Healing defense configuration."""
+    topic_sim_threshold: float = 0.20   # CitationEdge flagged as SuspiciousEdge if sim < this
+    mismatch_alert_ratio: float = 0.15  # trigger full plan if >15% of edges are suspicious
+    denoising_steps: int = 3            # base k in X' = (A_hat)^k @ X
+    min_edges_ratio: float = 0.75       # keep at least 75% of edges — was 0.50, too aggressive
+    adaptive_denoising: bool = True     # scale k with detected vulnerability ratio
+    max_denoising_steps: int = 7        # upper limit for adaptive k
+    temporal_drift_sigma: float = 2.5   # z-score threshold for temporal anomaly detection
+
+
+@dataclass
+class DefenseConfig:
+    # Legacy 3-step pipeline (still used for comparison)
+    prune_percentile: float = 10.0
+    cosine_threshold: float = 0.0
+    min_edges_ratio: float = 0.7
     knn_k: int = 3
+
+    # Defense 1: GNNGUARD
+    gnnguard: GNNGuardConfig = field(default_factory=GNNGuardConfig)
+
+    # Defense 2: Ontology-Driven Self-Healing
+    ontology: OntologyDefenseConfig = field(default_factory=OntologyDefenseConfig)
 
 
 @dataclass

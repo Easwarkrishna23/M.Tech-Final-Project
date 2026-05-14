@@ -1,4 +1,4 @@
-Pipeline started at 2026-05-11 22:37:59
+Pipeline started at 2026-05-14 05:09:15
 Log → /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/pipeline_log.txt
 
 ============================================================
@@ -32,31 +32,362 @@ Log → /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/pipe
   [Cora GAT]  acc=0.8130  f1=0.8062
   [Checkpoint] Loading gcn_elliptic_train_era.npz
   [Elliptic GCN final t=49]  acc=0.8750  f1=0.4667
-  Phase 3 done in 0m 2s
+  Phase 3 done in 0m 1s
 
 ============================================================
   PHASE 4+5 — Cora Attacks + Defense
 ============================================================
-  [Cache] Loading Phase 4+5 results from /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/phase45_cache.json
-  [Skip] Phase 4+5 already complete — using cached results
 
-[Phase 4 Results (cached)]
-  nettack                    acc=0.7780  f1=0.7685  drop=+0.0230
-  dice                       acc=0.7480  f1=0.7442  drop=+0.0530
-  meta_attack                acc=0.7990  f1=0.7924  drop=+0.0020
-  random_structure           acc=0.7540  f1=0.7473  drop=+0.0470
+============================================================
+PHASE 4 — Adversarial Attacks on CORA
+============================================================
+
+[Poisoning 1/4] Nettack (low-margin targeting)
+  [Nettack] Attacking 120 high-confidence nodes, 40 perturbations each (gradient-based, JIT-compiled)...
+  Nettack: +2981/-461 edges, 71 feature perturbations, budget=4800
+  [Retrain after Nettack] Training on poisoned graph...
+  [Retrain] Best val acc on poisoned graph: 0.8000
+
+[Poisoning 2/4] DICE Attack (bridge-node targeting)
+  [DICE] Computing betweenness centrality (approx, k=300)...
+  [DICE] 542 bridge nodes identified (bc ≥ 0.0015)
+  [DICE] Budget=2111 edges (40% of 5278), delete=1055, add=1055
+  [DICE] Done: +1055 external edges, -1055 internal edges (bridge-targeted)
+  DICE: +1055/-1055 edges, 0 feature perturbations, budget=2111
+  [Retrain after DICE] Training on poisoned graph...
+  [Retrain] Best val acc on poisoned graph: 0.7020
+
+[Poisoning 3/4] Meta Attack (bilevel approx.)
+  [Meta Attack] Budget=500 edges (35% of 5278), inner_epochs=15, α=0.7, β=0.9
+    step 5/500, score=0.0383, edge=added (376,1358)
+    step 10/500, score=0.0570, edge=added (380,1358)
+    step 15/500, score=0.0660, edge=added (630,458)
+    step 20/500, score=0.0727, edge=added (317,306)
+    step 25/500, score=0.0741, edge=added (389,306)
+    step 30/500, score=0.0721, edge=added (405,1701)
+    step 35/500, score=0.0740, edge=added (366,1358)
+    step 40/500, score=0.0765, edge=added (291,1358)
+    step 45/500, score=0.0751, edge=added (576,963)
+    step 50/500, score=0.0752, edge=added (417,1623)
+    step 55/500, score=0.0738, edge=added (435,1810)
+    step 60/500, score=0.0733, edge=added (224,1701)
+    step 65/500, score=0.0775, edge=added (528,31)
+    step 70/500, score=0.0732, edge=added (225,2182)
+    step 75/500, score=0.0720, edge=added (438,2034)
+    step 80/500, score=0.0719, edge=added (300,2182)
+    step 85/500, score=0.0721, edge=added (164,963)
+    step 90/500, score=0.0729, edge=added (197,1103)
+    step 95/500, score=0.0748, edge=added (548,1701)
+    step 100/500, score=0.0759, edge=added (160,1358)
+    step 105/500, score=0.0738, edge=added (546,963)
+    step 110/500, score=0.0747, edge=added (278,1103)
+    step 115/500, score=0.0774, edge=added (209,1358)
+    step 120/500, score=0.0768, edge=added (394,1810)
+    step 125/500, score=0.0789, edge=added (209,1103)
+    step 130/500, score=0.0794, edge=added (172,1103)
+    step 135/500, score=0.0778, edge=added (1103,34)
+    step 140/500, score=0.0771, edge=added (478,163)
+    step 145/500, score=0.0765, edge=added (517,1042)
+    step 150/500, score=0.0760, edge=added (166,1441)
+    step 155/500, score=0.0757, edge=added (1103,932)
+    step 160/500, score=0.0752, edge=added (634,95)
+    step 165/500, score=0.0748, edge=added (590,1955)
+    step 170/500, score=0.0751, edge=added (287,973)
+    step 175/500, score=0.0745, edge=added (531,24)
+    step 180/500, score=0.0756, edge=added (187,1358)
+    step 185/500, score=0.0747, edge=added (1358,1423)
+    step 190/500, score=0.0747, edge=added (300,95)
+    step 195/500, score=0.0853, edge=added (461,1190)
+    step 200/500, score=0.1020, edge=added (522,88)
+    step 205/500, score=0.1194, edge=added (520,1184)
+    step 210/500, score=0.1228, edge=added (592,88)
+    step 215/500, score=0.1212, edge=added (355,2097)
+    step 220/500, score=0.1178, edge=added (520,458)
+    step 225/500, score=0.1168, edge=added (164,33)
+    step 230/500, score=0.1166, edge=added (1103,1262)
+    step 235/500, score=0.1143, edge=added (520,1441)
+    step 240/500, score=0.1138, edge=added (520,76)
+    step 245/500, score=0.1135, edge=added (489,1527)
+    step 250/500, score=0.1135, edge=added (593,1527)
+    step 255/500, score=0.1129, edge=added (438,2001)
+    step 260/500, score=0.1116, edge=added (345,963)
+    step 265/500, score=0.1103, edge=added (323,2034)
+    step 270/500, score=0.1101, edge=added (260,1692)
+    step 275/500, score=0.1091, edge=added (476,88)
+    step 280/500, score=0.1102, edge=added (458,349)
+    step 285/500, score=0.1129, edge=added (182,1122)
+    step 290/500, score=0.1102, edge=added (1527,1220)
+    step 295/500, score=0.1110, edge=added (398,1527)
+    step 300/500, score=0.1119, edge=added (571,1527)
+    step 305/500, score=0.1150, edge=added (476,1527)
+    step 310/500, score=0.1140, edge=added (304,1441)
+    step 315/500, score=0.1158, edge=added (1527,975)
+    step 320/500, score=0.1162, edge=added (1527,2330)
+    step 325/500, score=0.1153, edge=added (1527,1838)
+    step 330/500, score=0.1144, edge=added (387,963)
+    step 335/500, score=0.1153, edge=added (1527,966)
+    step 340/500, score=0.1136, edge=added (197,2345)
+    step 345/500, score=0.1138, edge=added (388,1372)
+    step 350/500, score=0.1110, edge=added (578,88)
+    step 355/500, score=0.1106, edge=added (504,88)
+    step 360/500, score=0.1106, edge=added (531,1542)
+    step 365/500, score=0.1103, edge=added (606,1542)
+    step 370/500, score=0.1098, edge=added (285,2157)
+    step 375/500, score=0.1105, edge=added (571,88)
+    step 380/500, score=0.1108, edge=added (185,963)
+    step 385/500, score=0.1160, edge=added (576,2001)
+    step 390/500, score=0.1177, edge=added (309,2001)
+    step 395/500, score=0.1173, edge=added (345,2001)
+    step 400/500, score=0.1156, edge=added (963,2225)
+    step 405/500, score=0.1153, edge=added (277,88)
+    step 410/500, score=0.1160, edge=added (272,88)
+    step 415/500, score=0.1147, edge=added (88,860)
+    step 420/500, score=0.1151, edge=added (409,2001)
+    step 425/500, score=0.1137, edge=added (240,2345)
+    step 430/500, score=0.1138, edge=added (574,2122)
+    step 435/500, score=0.1171, edge=added (212,1527)
+    step 440/500, score=0.1136, edge=added (458,130)
+    step 445/500, score=0.1122, edge=added (1441,671)
+    step 450/500, score=0.1120, edge=added (2182,1220)
+    step 455/500, score=0.1128, edge=added (2182,860)
+    step 460/500, score=0.1166, edge=added (603,2182)
+    step 465/500, score=0.1165, edge=added (2182,1309)
+    step 470/500, score=0.1122, edge=added (2182,975)
+    step 475/500, score=0.1108, edge=added (2182,2355)
+    step 480/500, score=0.1099, edge=added (528,1914)
+    step 485/500, score=0.1101, edge=added (1103,756)
+    step 490/500, score=0.1111, edge=added (388,1914)
+    step 495/500, score=0.1121, edge=added (1042,1220)
+    step 500/500, score=0.1162, edge=added (603,1042)
+  Meta Attack: +492/-8 edges, 0 feature perturbations, budget=500
+  [Retrain after Meta Attack] Training on poisoned graph...
+  [Retrain] Best val acc on poisoned graph: 0.7060
+
+[Poisoning 4/4] Random Structure Attack (centrality-guided)
+  [Random Structure] Computing betweenness centrality (approx, k=300)...
+  [Random Structure] Budget=2375 (+1187 add / -1188 remove), bridge-targeted deletion=50%
+  Random Structure: +1184/-1185 edges, 0 feature perturbations, budget=2375
+  [Retrain after Random Structure] Training on poisoned graph...
+  [Retrain] Best val acc on poisoned graph: 0.6940
+
+[Evasion 1/3] Feature Perturbation Attack
+  [Feature Perturbation] ε=0.5, mode=uniform, perturbed 2708 nodes
+  Feature Perturbation: +0/-0 edges, 2708 feature perturbations, budget=2708
+
+[Evasion 2/3] Edge Flip Attack (bridge-node strategy)
+  [Edge Flip] Computing betweenness centrality (approx, k=300)...
+  [Edge Flip] Bridge strategy: top bc=0.1319
+  [Edge Flip] Strategy=bridge, budget=2111
+  Edge Flip: +935/-924 edges, 0 feature perturbations, budget=1989
+
+[Evasion 3/3] Gradient-Based Attack
+  [Gradient Attack] ε=0.15, steps=20, α=0.0075
+  Gradient Attack: +0/-0 edges, 1000 feature perturbations, budget=1000
+
+[Runner] Saved 7 attacked graphs → results/attacked_graphs
+
+[Phase 4 Results]
+  nettack                    acc=0.6810  f1=0.6370  drop=+0.1200
+  dice                       acc=0.6980  f1=0.6866  drop=+0.1030
+  meta_attack                acc=0.7870  f1=0.7810  drop=+0.0140
+  random_structure           acc=0.7280  f1=0.7176  drop=+0.0730
   feature_perturbation       acc=0.4190  f1=0.1784  drop=+0.3820
-  edge_flip                  acc=0.7360  f1=0.7248  drop=+0.0650
+  edge_flip                  acc=0.6360  f1=0.6320  drop=+0.1650
   gradient_attack            acc=0.0000  f1=0.0000  drop=+0.8010
 
-[Phase 5 Results (cached)]
-  nettack                    acc=0.7750  recovery=N/A
-  dice                       acc=0.7340  recovery=-26.4%
-  meta_attack                acc=0.7910  recovery=N/A
-  random_structure           acc=0.7300  recovery=N/A
-  feature_perturbation       acc=0.7390  recovery=83.8%
-  edge_flip                  acc=0.7290  recovery=-10.8%
-  gradient_attack            acc=0.9210  recovery=115.0%
+============================================================
+PHASE 5 — Dual Defense Pipeline (GNNGUARD + Ontology)
+============================================================
+
+[Defending against: nettack]
+
+  [Defense Pipeline] nettack (damage=0.120, attack_type=poisoning)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0000, pruning 0/7798 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8977, pruning 390/7798 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 7798 → 7408 edges (5.0% removed)
+  [GNNGUARD] Val acc after defense: 0.7980
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 6177/7798 (79.2%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 7798 → 5848 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 6 (ratio=79.2%)
+  [Ontology] 6-step diffusion: mean Δ‖x‖=3.5269
+  [Ontology] Val acc after defense: 0.7720
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.7980)
+
+[Defending against: dice]
+
+  [Defense Pipeline] dice (damage=0.103, attack_type=poisoning)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0000, pruning 0/5278 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8556, pruning 264/5278 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5278 → 5014 edges (5.0% removed)
+  [GNNGUARD] Val acc after defense: 0.6960
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 3920/5278 (74.3%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5278 → 3958 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 6 (ratio=74.3%)
+  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3022
+  [Ontology] Val acc after defense: 0.6740
+  [Recovery Boost] Both defenses below baseline (best=0.6960 < 0.8010). Retrying with stronger ontology config...
+  [Ontology] Suspicious edges: 3920/5278 (74.3%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5278 → 3958 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3022
+  [Ontology-Boost] Val acc after defense: 0.6740
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.6960)
+
+[Defending against: meta_attack]
+
+  [Defense Pipeline] meta_attack (damage=0.014, attack_type=poisoning)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0000, pruning 0/5762 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8991, pruning 289/5762 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5762 → 5473 edges (5.0% removed)
+  [GNNGUARD] Val acc after defense: 0.7200
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 4029/5762 (69.9%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5762 → 4321 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 6 (ratio=69.9%)
+  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3560
+  [Ontology] Val acc after defense: 0.6960
+  [Recovery Boost] Both defenses below baseline (best=0.7200 < 0.8010). Retrying with stronger ontology config...
+  [Ontology] Suspicious edges: 4029/5762 (69.9%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5762 → 4321 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3560
+  [Ontology-Boost] Val acc after defense: 0.6960
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.7200)
+
+[Defending against: random_structure]
+
+  [Defense Pipeline] random_structure (damage=0.073, attack_type=poisoning)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0000, pruning 0/5277 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8581, pruning 264/5277 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5277 → 5013 edges (5.0% removed)
+  [GNNGUARD] Val acc after defense: 0.7120
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 3976/5277 (75.3%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5277 → 3957 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 6 (ratio=75.3%)
+  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3104
+  [Ontology] Val acc after defense: 0.6660
+  [Recovery Boost] Both defenses below baseline (best=0.7120 < 0.8010). Retrying with stronger ontology config...
+  [Ontology] Suspicious edges: 3976/5277 (75.3%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5277 → 3957 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] 6-step diffusion: mean Δ‖x‖=3.3104
+  [Ontology-Boost] Val acc after defense: 0.6660
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.7120)
+
+[Defending against: feature_perturbation]
+
+  [Defense Pipeline] feature_perturbation (damage=0.382, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3369, pruning 264/5278 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9953, pruning 264/5278 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5278 → 4770 edges (9.6% removed)
+  [GNNGUARD] Val acc after defense: 0.6700
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/5278 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=6.1123
+  [Ontology] Val acc after defense: 0.7420
+  [Recovery Boost] Both defenses below baseline (best=0.7420 < 0.8010). Retrying with stronger ontology config...
+  [Ontology] Suspicious edges: 0/5278 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 6-step diffusion: mean Δ‖x‖=6.4454
+  [Ontology-Boost] Val acc after defense: 0.7220
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.7420)
+
+[Defending against: edge_flip]
+
+  [Defense Pipeline] edge_flip (damage=0.165, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0000, pruning 0/5289 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8606, pruning 265/5289 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5289 → 5024 edges (5.0% removed)
+  [GNNGUARD] Val acc after defense: 0.7500
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 3880/5289 (73.4%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5289 → 3966 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 6 (ratio=73.4%)
+  [Ontology] 6-step diffusion: mean Δ‖x‖=3.2463
+  [Ontology] Val acc after defense: 0.7380
+  [Recovery Boost] Both defenses below baseline (best=0.7500 < 0.8010). Retrying with stronger ontology config...
+  [Ontology] Suspicious edges: 3880/5289 (73.4%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5289 → 3966 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] 6-step diffusion: mean Δ‖x‖=3.2463
+  [Ontology-Boost] Val acc after defense: 0.7380
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.7500)
+
+[Defending against: gradient_attack]
+
+  [Defense Pipeline] gradient_attack (damage=0.801, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0170, pruning 264/5278 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.6881, pruning 264/5278 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5278 → 4780 edges (9.4% removed)
+  [GNNGUARD] Val acc after defense: 0.7820
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 3382/5278 (64.1%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5278 → 3958 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 6 (ratio=64.1%)
+  [Ontology] 6-step diffusion: mean Δ‖x‖=3.5309
+  [Ontology] Val acc after defense: 0.7860
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.7860)
+
+[Defense] Saved defended graphs → results/defended_graphs
+
+[Phase 5 Results — Dual Defense Comparison]
+  Attack                     After Atk   GNNGUARD   Ontology       Best    Recovery
+  -------------------------  ---------  ---------  ---------  ---------  ----------
+  nettack                       0.6810     0.6650     0.6770     0.6770       -3.3%
+  dice                          0.6980     0.7070     0.6760     0.7070        8.7%
+  meta_attack                   0.7870     0.7840     0.7600     0.7840  N/A (<5pp)
+  random_structure              0.7280     0.7310     0.6710     0.7310        4.1%
+  feature_perturbation          0.4190     0.7210     0.7730     0.7730       92.7%
+  edge_flip                     0.6360     0.6140     0.6380     0.6380        1.2%
+  gradient_attack               0.0000     0.9070     0.8700     0.9070      113.2%
+
+[Structural Metrics — Attack Impact & Defense Recovery]
+  Attack                       H-Drop    BE-Fit   ΔAssort       CLR   ASR-Glb
+  -------------------------  --------  --------  --------  --------  --------
+  nettack                      0.2883    0.6839   +0.0764    0.0533    0.2130
+  dice                         0.1582    0.6647   +0.0078    0.0795    0.2210
+  meta_attack                  0.0545    0.1160   -0.0178    0.0751    0.0720
+  random_structure             0.1460    0.6362   +0.0138    0.0588    0.1940
+  feature_perturbation         0.0000    0.0000   +0.0000    0.7194    0.6090
+  edge_flip                    0.1442    0.3881   +0.0157    0.1236    0.2710
+  gradient_attack              0.0000    0.0000   +0.0000    0.8700    0.9330
+  [Baseline assortativity: -0.0659]
+  [Cache] Phase 4+5 results saved → /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/phase45_cache.json
+  Phase 4+5 done in 112m 30s
   [Tables] Saved → results/tables/cora_results.md
 
 ============================================================
@@ -77,7 +408,7 @@ Log → /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/pipe
   [Viz] Saved → results/figures/embeddings_tsne_feature_perturbation_cora.png
   [Embeddings] Running TSNE on 1500 nodes × 64D embeddings …
   [Viz] Saved → results/figures/embeddings_tsne_nettack_cora.png
-  Phase 6 done in 0m 18s
+  Phase 6 done in 0m 16s
 
 ============================================================
   PHASE 7 — Elliptic Temporal Evaluation
@@ -92,651 +423,1923 @@ Log → /Users/asifmuhammed/Documents/personla/M.Tech-Final-Project/results/pipe
 
 [7.2] Attack + defense on final snapshot (t=49) …
   Baseline  acc=0.8750  f1=0.4667
-  [Elliptic] feature std=0.917  grad_ε=0.183  feat_ε=0.458
+  [Elliptic] feature std=0.917  grad_ε=1.375  feat_ε=1.834
 
   [gradient_attack]
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-    After attack: acc=0.8750  f1=0.4667  drop=+0.0000
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4244 | removed 246/2587 edges (9.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9895
-    After defense: acc=0.9896  f1=0.9753  recovery=N/A
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+    After attack: acc=0.8646  f1=0.4637  drop=+0.0104
+
+  [Defense Pipeline] gradient_attack (damage=0.010, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3005, pruning 130/2587 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8853, pruning 130/2587 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2587 → 2410 edges (7.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9789
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 92/2587 (3.6%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.6506
+  [Ontology] Val acc after defense: 0.8842
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9789)
+    After defense: acc=0.9583  f1=0.9110  recovery=N/A
 
   [feature_perturbation]
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2454 nodes
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2454 nodes
     After attack: acc=0.8750  f1=0.4667  drop=+0.0000
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4542 | removed 238/2587 edges (9.2%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8842
-    After defense: acc=0.8750  f1=0.4667  recovery=N/A
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3678, pruning 130/2587 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9472, pruning 130/2587 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2587 → 2343 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9579
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/2587 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6489
+  [Ontology] Val acc after defense: 0.8842
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9579)
+    After defense: acc=0.9271  f1=0.8492  recovery=N/A
+
+  [temporal_perturbation]
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=981, delta_src=temporal (X_t - X_{t-1}), n_ref=2454
+  [Temporal Perturbation] Mean natural drift of targets: 14.2912
+    After attack: acc=0.8646  f1=0.4637  drop=+0.0104
+  [Temporal Ontology] Suspicious nodes: 515 (21.0%)  mean_drift=34.2813  max_drift=380.4696
+  [Temporal Ontology] Isolated 515 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=21.0%)
+    After defense: acc=0.8958  f1=0.7776  recovery=N/A
 
 [7.3] Building temporal line plots (all 49 timesteps) …
 
   [gradient_attack] temporal lines …
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.0713 | removed 894/9164 edges (9.8%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9930
-    t= 1  base=0.658  atk=0.991  def=0.991
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.0804 | removed 500/5241 edges (9.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9865
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.0990 | removed 800/8316 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9922
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.0729 | removed 774/8180 edges (9.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9792
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.0686 | removed 841/8623 edges (9.8%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9973
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1161 | removed 493/5242 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9897
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.0714 | removed 694/7253 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9167
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1200 | removed 490/5186 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9698
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.076)
-  [Edge Pruning] p10.0%→threshold=0.0963 | removed 576/5939 edges (9.7%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.8112, max Δ‖x‖=11.5493
-  [Graph Reconstruction] k=3 | edges: 5363 → 14232 (+8869 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8710
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1150 | removed 827/8588 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9845
-    t=10  base=0.873  atk=0.975  def=0.975
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.043)
-  [Edge Pruning] p10.0%→threshold=0.0847 | removed 445/4656 edges (9.6%)
-  [Defense] Damage 0.043 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9496
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1371 | removed 205/2213 edges (9.3%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9703
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.171)
-  [Edge Pruning] p10.0%→threshold=0.1116 | removed 460/4827 edges (9.5%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.8097, max Δ‖x‖=13.9388
-  [Graph Reconstruction] k=3 | edges: 4367 → 12553 (+8186 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9317
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1259 | removed 185/2078 edges (8.9%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9024
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.080)
-  [Edge Pruning] p10.0%→threshold=0.1506 | removed 354/3823 edges (9.3%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.6528, max Δ‖x‖=9.1325
-  [Graph Reconstruction] k=3 | edges: 3469 → 9903 (+6434 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9512
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.019)
-  [Edge Pruning] p10.0%→threshold=0.1579 | removed 291/3120 edges (9.3%)
-  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9333
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.012)
-  [Edge Pruning] p10.0%→threshold=0.1266 | removed 339/3650 edges (9.3%)
-  [Defense] Damage 0.012 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9752
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.025)
-  [Edge Pruning] p10.0%→threshold=0.1518 | removed 200/2115 edges (9.5%)
-  [Defense] Damage 0.025 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9351
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1155 | removed 359/3838 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8926
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.044)
-  [Edge Pruning] p10.0%→threshold=0.1215 | removed 454/4755 edges (9.5%)
-  [Defense] Damage 0.044 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9111
-    t=20  base=0.756  atk=0.711  def=0.917
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.054)
-  [Edge Pruning] p10.0%→threshold=0.0980 | removed 384/3959 edges (9.7%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.9201, max Δ‖x‖=21.1246
-  [Graph Reconstruction] k=3 | edges: 3575 → 9790 (+6215 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9531
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1410 | removed 630/7014 edges (9.0%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9119
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1382 | removed 438/4584 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9576
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1225 | removed 486/5124 edges (9.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9375
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.083)
-  [Edge Pruning] p10.0%→threshold=0.1619 | removed 252/2619 edges (9.6%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.8917, max Δ‖x‖=21.9985
-  [Graph Reconstruction] k=3 | edges: 2367 → 6446 (+4079 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9831
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.019)
-  [Edge Pruning] p10.0%→threshold=0.1653 | removed 253/2690 edges (9.4%)
-  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9515
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.047)
-  [Edge Pruning] p10.0%→threshold=0.1719 | removed 17/1168 edges (1.5%)
-  [Defense] Damage 0.047 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9000
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.190)
-  [Edge Pruning] p10.0%→threshold=0.1848 | removed 165/1717 edges (9.6%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.8565, max Δ‖x‖=10.1424
-  [Graph Reconstruction] k=3 | edges: 1552 → 4383 (+2831 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 1.0000
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.038)
-  [Edge Pruning] p10.0%→threshold=0.2137 | removed 423/4541 edges (9.3%)
-  [Defense] Damage 0.038 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9744
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.009)
-  [Edge Pruning] p10.0%→threshold=0.2008 | removed 243/2561 edges (9.5%)
-  [Defense] Damage 0.009 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9519
-    t=30  base=0.841  atk=0.832  def=0.944
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2282 | removed 287/3049 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9504
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.019)
-  [Edge Pruning] p10.0%→threshold=0.2193 | removed 474/4952 edges (9.6%)
-  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9659
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2646 | removed 296/3366 edges (8.8%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9540
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.038)
-  [Edge Pruning] p10.0%→threshold=0.2659 | removed 189/2692 edges (7.0%)
-  [Defense] Damage 0.038 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9314
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.019)
-  [Edge Pruning] p10.0%→threshold=0.3203 | removed 604/6351 edges (9.5%)
-  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9813
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3140 | removed 757/7813 edges (9.7%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9824
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.010)
-  [Edge Pruning] p10.0%→threshold=0.3392 | removed 363/3849 edges (9.4%)
-  [Defense] Damage 0.010 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9192
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3522 | removed 303/3094 edges (9.8%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9801
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3395 | removed 287/2914 edges (9.8%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9322
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3768 | removed 513/5246 edges (9.8%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9087
-    t=40  base=0.898  atk=0.906  def=0.906
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3975 | removed 586/6093 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8982
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3894 | removed 827/8493 edges (9.7%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9581
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3984 | removed 560/5950 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9853
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3948 | removed 527/5551 edges (9.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9874
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3821 | removed 656/6673 edges (9.8%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9959
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4473 | removed 365/3866 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9930
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4023 | removed 498/5748 edges (8.7%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9762
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3826 | removed 294/3284 edges (9.0%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9255
-  [Gradient Attack] ε=0.1833571195602417, steps=20, α=0.0092
-  [Defense Pipeline] Starting on gradient_attack (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4244 | removed 246/2587 edges (9.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9895
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0256, pruning 459/9164 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.6591, pruning 459/9164 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 9164 → 8328 edges (9.5% removed)
+  [GNNGUARD] Val acc after defense: 0.9930
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 2510/9164 (27.4%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 9164 → 6873 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=27.4%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.1878
+  [Ontology] Val acc after defense: 0.9930
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9930)
+    t= 1  base=0.658  atk=0.707  def=0.991
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0288, pruning 262/5241 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.6867, pruning 262/5241 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5241 → 4751 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.9865
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1385/5241 (26.4%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5241 → 3930 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=26.4%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.0810
+  [Ontology] Val acc after defense: 0.9865
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9865)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0370, pruning 416/8316 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7142, pruning 416/8316 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 8316 → 7566 edges (9.5% removed)
+  [GNNGUARD] Val acc after defense: 0.9922
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1786/8316 (21.5%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 8316 → 6530 edges (21.5% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=21.5%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.0560
+  [Ontology] Val acc after defense: 0.9922
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9922)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0241, pruning 409/8180 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.6855, pruning 409/8180 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 8180 → 7436 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9792
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 2879/8180 (35.2%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 8180 → 6135 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 6 (ratio=35.2%)
+  [Ontology] 6-step diffusion: mean Δ‖x‖=2.3073
+  [Ontology] Val acc after defense: 0.9792
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9792)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0314, pruning 432/8623 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.6763, pruning 432/8623 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 8623 → 7822 edges (9.6% removed)
+  [GNNGUARD] Val acc after defense: 0.9973
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 2143/8623 (24.9%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 8623 → 6480 edges (24.9% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=24.9%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.2317
+  [Ontology] Val acc after defense: 0.9973
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9973)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0641, pruning 263/5242 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7813, pruning 263/5242 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5242 → 4770 edges (9.5% removed)
+  [GNNGUARD] Val acc after defense: 0.9897
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 925/5242 (17.6%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5242 → 4317 edges (17.6% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=17.6%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=2.1636
+  [Ontology] Val acc after defense: 0.9897
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9897)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.062, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0351, pruning 335/7253 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7622, pruning 363/7253 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 7253 → 6615 edges (9.3% removed)
+  [GNNGUARD] Val acc after defense: 0.9167
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1873/7253 (25.8%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 7253 → 5439 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=25.8%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.1938
+  [Ontology] Val acc after defense: 0.9167
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9167)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.094, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0545, pruning 260/5186 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.6723, pruning 260/5186 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5186 → 4710 edges (9.6% removed)
+  [GNNGUARD] Val acc after defense: 0.9440
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1098/5186 (21.2%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5186 → 4088 edges (21.2% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=21.2%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.2979
+  [Ontology] Val acc after defense: 0.9871
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9871)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.242, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0521, pruning 294/5939 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7568, pruning 297/5939 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5939 → 5422 edges (9.1% removed)
+  [GNNGUARD] Val acc after defense: 0.8516
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1418/5939 (23.9%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5939 → 4521 edges (23.9% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=23.9%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=1.9419
+  [Ontology] Val acc after defense: 0.8452
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8516)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.030, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0673, pruning 430/8588 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7817, pruning 430/8588 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 8588 → 7854 edges (9.1% removed)
+  [GNNGUARD] Val acc after defense: 0.9845
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 2415/8588 (28.1%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 8588 → 6441 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=28.1%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.0813
+  [Ontology] Val acc after defense: 0.9845
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9845)
+    t=10  base=0.873  atk=0.843  def=0.975
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.179, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0512, pruning 228/4656 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7495, pruning 233/4656 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4656 → 4250 edges (9.3% removed)
+  [GNNGUARD] Val acc after defense: 0.9496
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1399/4656 (30.0%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 4656 → 3492 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 6 (ratio=30.0%)
+  [Ontology] 6-step diffusion: mean Δ‖x‖=2.0547
+  [Ontology] Val acc after defense: 0.9065
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9496)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.059, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0570, pruning 111/2213 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7206, pruning 111/2213 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2213 → 2010 edges (9.6% removed)
+  [GNNGUARD] Val acc after defense: 0.9703
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 459/2213 (20.7%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 2213 → 1754 edges (20.7% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=20.7%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.2330
+  [Ontology] Val acc after defense: 0.9703
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9703)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.305, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0572, pruning 242/4827 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7809, pruning 242/4827 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4827 → 4393 edges (9.4% removed)
+  [GNNGUARD] Val acc after defense: 0.9130
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1015/4827 (21.0%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 4827 → 3812 edges (21.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=21.0%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.0420
+  [Ontology] Val acc after defense: 0.8820
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9130)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.140, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0669, pruning 104/2078 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7976, pruning 104/2078 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2078 → 1897 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9024
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 356/2078 (17.1%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 2078 → 1722 edges (17.1% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=17.1%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=1.9877
+  [Ontology] Val acc after defense: 0.9146
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9146)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.272, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0649, pruning 192/3823 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7877, pruning 192/3823 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3823 → 3486 edges (9.5% removed)
+  [GNNGUARD] Val acc after defense: 0.9187
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 623/3823 (16.3%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 3823 → 3200 edges (16.3% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=16.3%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=1.8732
+  [Ontology] Val acc after defense: 0.9268
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9268)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.213, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0641, pruning 156/3120 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7696, pruning 156/3120 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3120 → 2840 edges (9.5% removed)
+  [GNNGUARD] Val acc after defense: 0.9619
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 526/3120 (16.9%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 3120 → 2594 edges (16.9% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=16.9%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=1.8161
+  [Ontology] Val acc after defense: 0.9429
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9619)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.165, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0602, pruning 183/3650 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7405, pruning 183/3650 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3650 → 3329 edges (9.3% removed)
+  [GNNGUARD] Val acc after defense: 0.9689
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 822/3650 (22.5%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 3650 → 2828 edges (22.5% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=22.5%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.2757
+  [Ontology] Val acc after defense: 0.9317
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9689)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.063, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0754, pruning 106/2115 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7807, pruning 106/2115 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2115 → 1938 edges (9.3% removed)
+  [GNNGUARD] Val acc after defense: 0.9221
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 345/2115 (16.3%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 2115 → 1770 edges (16.3% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=16.3%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=2.1320
+  [Ontology] Val acc after defense: 0.9481
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9481)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.074, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0621, pruning 191/3838 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7712, pruning 192/3838 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3838 → 3497 edges (9.5% removed)
+  [GNNGUARD] Val acc after defense: 0.8926
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 814/3838 (21.2%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 3838 → 3024 edges (21.2% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=21.2%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.1522
+  [Ontology] Val acc after defense: 0.9597
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9597)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.172, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0606, pruning 238/4755 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7677, pruning 238/4755 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4755 → 4338 edges (9.4% removed)
+  [GNNGUARD] Val acc after defense: 0.8944
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1023/4755 (21.5%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 4755 → 3732 edges (21.5% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=21.5%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.1366
+  [Ontology] Val acc after defense: 0.8944
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8944)
+    t=20  base=0.756  atk=0.583  def=0.894
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.279, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0484, pruning 198/3959 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7412, pruning 198/3959 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3959 → 3597 edges (9.6% removed)
+  [GNNGUARD] Val acc after defense: 0.9375
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 908/3959 (22.9%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 3959 → 3051 edges (22.9% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=22.9%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.0834
+  [Ontology] Val acc after defense: 0.8438
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9375)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.082, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0719, pruning 347/7014 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.6843, pruning 351/7014 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 7014 → 6376 edges (9.5% removed)
+  [GNNGUARD] Val acc after defense: 0.9119
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1569/7014 (22.4%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 7014 → 5445 edges (22.4% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=22.4%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.4108
+  [Ontology] Val acc after defense: 0.9545
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9545)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.100, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0636, pruning 230/4584 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7209, pruning 230/4584 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4584 → 4184 edges (9.3% removed)
+  [GNNGUARD] Val acc after defense: 0.9576
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 915/4584 (20.0%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 4584 → 3669 edges (20.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=20.0%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=2.1636
+  [Ontology] Val acc after defense: 0.9576
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9576)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.088, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0640, pruning 257/5124 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7699, pruning 257/5124 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5124 → 4681 edges (9.4% removed)
+  [GNNGUARD] Val acc after defense: 0.9464
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1063/5124 (20.7%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 5124 → 4061 edges (20.7% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 5 (ratio=20.7%)
+  [Ontology] 5-step diffusion: mean Δ‖x‖=2.3160
+  [Ontology] Val acc after defense: 0.9464
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9464)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.149, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0841, pruning 131/2619 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7413, pruning 131/2619 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2619 → 2379 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9746
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 460/2619 (17.6%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 2619 → 2159 edges (17.6% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=17.6%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=2.1459
+  [Ontology] Val acc after defense: 0.9831
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9831)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.114, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0932, pruning 135/2690 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7698, pruning 135/2690 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2690 → 2455 edges (9.4% removed)
+  [GNNGUARD] Val acc after defense: 0.9029
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 450/2690 (16.7%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 2690 → 2240 edges (16.7% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=16.7%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=2.2436
+  [Ontology] Val acc after defense: 0.8932
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9029)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.047, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0969, pruning 59/1168 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7672, pruning 59/1168 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 1168 → 1065 edges (9.1% removed)
+  [GNNGUARD] Val acc after defense: 0.9000
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 224/1168 (19.2%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 1168 → 944 edges (19.2% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=19.2%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=1.9803
+  [Ontology] Val acc after defense: 0.9000
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9000)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.259, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1414, pruning 86/1717 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8316, pruning 86/1717 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 1717 → 1574 edges (8.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9821
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 236/1717 (13.7%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=13.7%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=2.4990
+  [Ontology] Val acc after defense: 0.9821
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9821)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.110, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1156, pruning 227/4541 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8035, pruning 227/4541 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4541 → 4176 edges (9.1% removed)
+  [GNNGUARD] Val acc after defense: 0.9829
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 551/4541 (12.1%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=12.1%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=2.5673
+  [Ontology] Val acc after defense: 0.9530
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9829)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.159, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1354, pruning 128/2561 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8203, pruning 128/2561 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2561 → 2344 edges (9.2% removed)
+  [GNNGUARD] Val acc after defense: 0.9327
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 302/2561 (11.8%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=11.8%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=2.4125
+  [Ontology] Val acc after defense: 0.9519
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9519)
+    t=30  base=0.841  atk=0.682  def=1.000
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.049, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1496, pruning 153/3049 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7891, pruning 153/3049 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3049 → 2825 edges (8.6% removed)
+  [GNNGUARD] Val acc after defense: 0.9433
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 307/3049 (10.1%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=10.1%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=2.6073
+  [Ontology] Val acc after defense: 0.9504
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9504)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.162, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1071, pruning 248/4952 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.6526, pruning 248/4952 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4952 → 4548 edges (8.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9735
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 633/4952 (12.8%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=12.8%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=2.5714
+  [Ontology] Val acc after defense: 0.9621
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9735)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.022, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1834, pruning 169/3366 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7981, pruning 169/3366 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3366 → 3083 edges (9.1% removed)
+  [GNNGUARD] Val acc after defense: 0.9540
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 205/3366 (6.1%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.1986
+  [Ontology] Val acc after defense: 0.9540
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9540)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.095, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1520, pruning 135/2692 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8089, pruning 135/2692 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2692 → 2482 edges (8.6% removed)
+  [GNNGUARD] Val acc after defense: 0.9314
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 242/2692 (9.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.5154
+  [Ontology] Val acc after defense: 0.9314
+  [Recovery Boost] Both defenses below baseline (best=0.9314 < 0.9619). Retrying with stronger ontology config...
+  [Ontology] Suspicious edges: 242/2692 (9.0%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 2692 → 2450 edges (9.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] 6-step diffusion: mean Δ‖x‖=2.5057
+  [Ontology-Boost] Val acc after defense: 0.9314
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9314)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.089, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1649, pruning 318/6351 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8016, pruning 318/6351 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 6351 → 5889 edges (8.3% removed)
+  [GNNGUARD] Val acc after defense: 0.9775
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 421/6351 (6.6%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.5801
+  [Ontology] Val acc after defense: 0.8652
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9775)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.087, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1270, pruning 391/7813 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7331, pruning 391/7813 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 7813 → 7171 edges (8.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9824
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 677/7813 (8.7%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.6679
+  [Ontology] Val acc after defense: 0.9824
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9824)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.059, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.2353, pruning 193/3849 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8833, pruning 193/3849 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3849 → 3538 edges (8.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9192
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 150/3849 (3.9%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.4864
+  [Ontology] Val acc after defense: 0.9394
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9394)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.059, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1887, pruning 155/3094 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8485, pruning 155/3094 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3094 → 2862 edges (8.5% removed)
+  [GNNGUARD] Val acc after defense: 0.8543
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 170/3094 (5.5%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.6449
+  [Ontology] Val acc after defense: 0.8543
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8543)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.063, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1281, pruning 146/2914 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7349, pruning 146/2914 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2914 → 2701 edges (8.2% removed)
+  [GNNGUARD] Val acc after defense: 0.9322
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 209/2914 (7.2%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.8357
+  [Ontology] Val acc after defense: 0.9322
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9322)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.082, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1745, pruning 263/5246 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7974, pruning 263/5246 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5246 → 4844 edges (8.3% removed)
+  [GNNGUARD] Val acc after defense: 0.9087
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 355/5246 (6.8%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.8912
+  [Ontology] Val acc after defense: 0.9087
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9087)
+    t=40  base=0.898  atk=0.816  def=0.906
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.075, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.2110, pruning 305/6093 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8550, pruning 305/6093 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 6093 → 5635 edges (8.2% removed)
+  [GNNGUARD] Val acc after defense: 0.8982
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 292/6093 (4.8%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.6871
+  [Ontology] Val acc after defense: 0.8982
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8982)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.051, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.2106, pruning 425/8493 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7839, pruning 425/8493 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 8493 → 7872 edges (8.1% removed)
+  [GNNGUARD] Val acc after defense: 0.8907
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 387/8493 (4.6%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.8460
+  [Ontology] Val acc after defense: 0.9395
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9395)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.065, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1486, pruning 298/5950 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.7653, pruning 298/5950 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5950 → 5479 edges (8.3% removed)
+  [GNNGUARD] Val acc after defense: 0.9853
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 548/5950 (9.2%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.7795
+  [Ontology] Val acc after defense: 0.9853
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9853)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.119, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.0816, pruning 278/5551 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.6913, pruning 278/5551 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5551 → 5113 edges (8.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9874
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 591/5551 (10.6%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] Adaptive denoising: k=3 → 4 (ratio=10.6%)
+  [Ontology] 4-step diffusion: mean Δ‖x‖=2.7901
+  [Ontology] Val acc after defense: 0.9874
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9874)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.073, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1730, pruning 334/6673 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8153, pruning 334/6673 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 6673 → 6135 edges (8.8% removed)
+  [GNNGUARD] Val acc after defense: 0.9959
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 464/6673 (7.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.7771
+  [Ontology] Val acc after defense: 0.9959
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9959)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.035, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.2133, pruning 194/3866 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8245, pruning 194/3866 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3866 → 3577 edges (8.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9930
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 155/3866 (4.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.7872
+  [Ontology] Val acc after defense: 0.9930
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9930)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.035, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.2513, pruning 288/5748 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8433, pruning 288/5748 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5748 → 5316 edges (8.2% removed)
+  [GNNGUARD] Val acc after defense: 0.9762
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 223/5748 (3.9%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.6979
+  [Ontology] Val acc after defense: 0.9762
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9762)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.032, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.1909, pruning 165/3284 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8679, pruning 165/3284 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3284 → 3044 edges (9.0% removed)
+  [GNNGUARD] Val acc after defense: 0.9255
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 197/3284 (6.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.6985
+  [Ontology] Val acc after defense: 0.9255
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9255)
+  [Gradient Attack] ε=1.3751783967018127, steps=20, α=0.0688
+
+  [Defense Pipeline] gradient_attack (damage=0.010, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3005, pruning 130/2587 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.8853, pruning 130/2587 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2587 → 2410 edges (7.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9789
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 92/2587 (3.6%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=2.6506
+  [Ontology] Val acc after defense: 0.8842
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9789)
   [Viz] Saved → results/figures/temporal_gradient_attack_elliptic.png
 
   [feature_perturbation] temporal lines …
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 7880 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1727 | removed 892/9164 edges (9.7%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9930
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 7880 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3042, pruning 459/9164 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9418, pruning 459/9164 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 9164 → 8306 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9930
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 2/9164 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.4463
+  [Ontology] Val acc after defense: 0.9930
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9930)
     t= 1  base=0.658  atk=0.991  def=0.991
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4544 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1779 | removed 505/5241 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9865
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 6621 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1907 | removed 801/8316 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9922
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5693 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1728 | removed 762/8180 edges (9.3%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9792
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 6803 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1807 | removed 831/8623 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9973
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4328 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2166 | removed 492/5242 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9897
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 6048 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.1756 | removed 697/7253 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9167
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4457 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2052 | removed 487/5186 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9440
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4996 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.076)
-  [Edge Pruning] p10.0%→threshold=0.1846 | removed 572/5939 edges (9.6%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=2.0250, max Δ‖x‖=12.5680
-  [Graph Reconstruction] k=3 | edges: 5367 → 13005 (+7638 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8516
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 6727 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2092 | removed 829/8588 edges (9.7%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9845
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4544 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3135, pruning 262/5241 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9432, pruning 262/5241 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5241 → 4768 edges (9.5% removed)
+  [GNNGUARD] Val acc after defense: 0.9865
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/5241 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.3917
+  [Ontology] Val acc after defense: 0.9865
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9865)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 6621 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3138, pruning 416/8316 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9502, pruning 416/8316 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 8316 → 7548 edges (9.5% removed)
+  [GNNGUARD] Val acc after defense: 0.9922
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 4/8316 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.4141
+  [Ontology] Val acc after defense: 0.9922
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9922)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 5693 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3073, pruning 409/8180 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9520, pruning 409/8180 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 8180 → 7421 edges (9.6% removed)
+  [GNNGUARD] Val acc after defense: 0.9792
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 3/8180 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5329
+  [Ontology] Val acc after defense: 0.9792
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9792)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 6803 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3146, pruning 432/8623 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9440, pruning 432/8623 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 8623 → 7854 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9973
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 2/8623 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.4900
+  [Ontology] Val acc after defense: 0.9973
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9973)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4328 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3166, pruning 263/5242 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9470, pruning 263/5242 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5242 → 4742 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.9897
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/5242 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.4912
+  [Ontology] Val acc after defense: 0.9897
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9897)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 6048 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3149, pruning 363/7253 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9383, pruning 363/7253 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 7253 → 6571 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.9167
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/7253 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5311
+  [Ontology] Val acc after defense: 0.9167
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9167)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4457 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3134, pruning 260/5186 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9408, pruning 260/5186 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5186 → 4696 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9440
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/5186 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5793
+  [Ontology] Val acc after defense: 0.9440
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9440)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4996 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.076, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3110, pruning 297/5939 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9432, pruning 297/5939 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5939 → 5376 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.8000
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/5939 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.4998
+  [Ontology] Val acc after defense: 0.8323
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.8323)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 6727 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3258, pruning 430/8588 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9547, pruning 430/8588 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 8588 → 7791 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9845
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/8588 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5632
+  [Ontology] Val acc after defense: 0.9845
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9845)
     t=10  base=0.873  atk=0.975  def=0.975
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4296 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.043)
-  [Edge Pruning] p10.0%→threshold=0.1823 | removed 446/4656 edges (9.6%)
-  [Defense] Damage 0.043 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9568
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2047 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2196 | removed 200/2213 edges (9.0%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9703
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4528 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.171)
-  [Edge Pruning] p10.0%→threshold=0.2019 | removed 462/4827 edges (9.6%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=2.0122, max Δ‖x‖=14.6088
-  [Graph Reconstruction] k=3 | edges: 4365 → 11421 (+7056 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9130
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2022 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2163 | removed 186/2078 edges (9.0%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9024
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3639 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.080)
-  [Edge Pruning] p10.0%→threshold=0.2208 | removed 354/3823 edges (9.3%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=1.9221, max Δ‖x‖=9.0057
-  [Graph Reconstruction] k=3 | edges: 3469 → 8665 (+5196 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9187
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2975 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.019)
-  [Edge Pruning] p10.0%→threshold=0.2328 | removed 287/3120 edges (9.2%)
-  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9619
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3385 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.012)
-  [Edge Pruning] p10.0%→threshold=0.2159 | removed 345/3650 edges (9.5%)
-  [Defense] Damage 0.012 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8820
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 1976 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.025)
-  [Edge Pruning] p10.0%→threshold=0.2359 | removed 194/2115 edges (9.2%)
-  [Defense] Damage 0.025 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9221
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3506 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2094 | removed 354/3838 edges (9.2%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8926
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4291 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.044)
-  [Edge Pruning] p10.0%→threshold=0.2079 | removed 454/4755 edges (9.5%)
-  [Defense] Damage 0.044 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9278
-    t=20  base=0.756  atk=0.711  def=0.911
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3537 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.054)
-  [Edge Pruning] p10.0%→threshold=0.1986 | removed 385/3959 edges (9.7%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=2.0998, max Δ‖x‖=21.3379
-  [Graph Reconstruction] k=3 | edges: 3574 → 9208 (+5634 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8438
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5894 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2174 | removed 662/7014 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9119
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4165 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2172 | removed 437/4584 edges (9.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9576
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4592 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2104 | removed 483/5124 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8795
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2314 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.083)
-  [Edge Pruning] p10.0%→threshold=0.2356 | removed 251/2619 edges (9.6%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=2.1124, max Δ‖x‖=22.4012
-  [Graph Reconstruction] k=3 | edges: 2368 → 6140 (+3772 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9746
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2523 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.019)
-  [Edge Pruning] p10.0%→threshold=0.2426 | removed 246/2690 edges (9.1%)
-  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9223
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 1089 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.047)
-  [Edge Pruning] p10.0%→threshold=0.2382 | removed 18/1168 edges (1.5%)
-  [Defense] Damage 0.047 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9000
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 1653 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.190)
-  [Edge Pruning] p10.0%→threshold=0.2666 | removed 116/1717 edges (6.8%)
-  [Feature Smoothing] X' = A_hat @ X | mean Δ‖x‖=2.1304, max Δ‖x‖=10.5920
-  [Graph Reconstruction] k=3 | edges: 1601 → 4161 (+2560 from k-NN)
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9643
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4275 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.038)
-  [Edge Pruning] p10.0%→threshold=0.2698 | removed 437/4541 edges (9.6%)
-  [Defense] Damage 0.038 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9786
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2483 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.009)
-  [Edge Pruning] p10.0%→threshold=0.2585 | removed 244/2561 edges (9.5%)
-  [Defense] Damage 0.009 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9231
-    t=30  base=0.841  atk=0.832  def=0.879
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2816 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.2762 | removed 286/3049 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9504
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4525 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.019)
-  [Edge Pruning] p10.0%→threshold=0.2716 | removed 474/4952 edges (9.6%)
-  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9621
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3151 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3035 | removed 306/3366 edges (9.1%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9540
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2486 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.038)
-  [Edge Pruning] p10.0%→threshold=0.3140 | removed 258/2692 edges (9.6%)
-  [Defense] Damage 0.038 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9314
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5507 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.019)
-  [Edge Pruning] p10.0%→threshold=0.3514 | removed 586/6351 edges (9.2%)
-  [Defense] Damage 0.019 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8652
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 6393 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3380 | removed 739/7813 edges (9.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9824
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3306 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.010)
-  [Edge Pruning] p10.0%→threshold=0.3505 | removed 365/3849 edges (9.5%)
-  [Defense] Damage 0.010 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9192
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2891 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3734 | removed 293/3094 edges (9.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8543
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2760 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.3636 | removed 249/2914 edges (8.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9322
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4481 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4085 | removed 506/5246 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9087
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4296 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.043, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3073, pruning 233/4656 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9322, pruning 233/4656 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4656 → 4212 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.8129
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/4656 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5356
+  [Ontology] Val acc after defense: 0.8129
+  [Recovery Boost] Both defenses below baseline (best=0.8129 < 0.8500). Retrying with stronger ontology config...
+  [Ontology] Suspicious edges: 1/4656 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 6-step diffusion: mean Δ‖x‖=4.8712
+  [Ontology-Boost] Val acc after defense: 0.8129
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8129)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2047 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3231, pruning 111/2213 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9359, pruning 111/2213 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2213 → 2009 edges (9.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9703
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/2213 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5649
+  [Ontology] Val acc after defense: 0.9703
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9703)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4528 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.171, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3108, pruning 242/4827 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9368, pruning 242/4827 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4827 → 4371 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.8323
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 3/4827 (0.1%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5025
+  [Ontology] Val acc after defense: 0.8571
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.8571)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2022 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3238, pruning 104/2078 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9424, pruning 104/2078 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2078 → 1893 edges (9.6% removed)
+  [GNNGUARD] Val acc after defense: 0.9024
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/2078 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.4908
+  [Ontology] Val acc after defense: 0.9024
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9024)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 3639 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.080, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3149, pruning 192/3823 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9498, pruning 192/3823 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3823 → 3471 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9024
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/3823 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.4493
+  [Ontology] Val acc after defense: 0.7642
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9024)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2975 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.019, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3197, pruning 156/3120 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9425, pruning 156/3120 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3120 → 2829 edges (9.6% removed)
+  [GNNGUARD] Val acc after defense: 0.9143
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/3120 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.4695
+  [Ontology] Val acc after defense: 0.7619
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9143)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 3385 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.012, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3187, pruning 183/3650 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9472, pruning 183/3650 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3650 → 3301 edges (9.9% removed)
+  [GNNGUARD] Val acc after defense: 0.8820
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/3650 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5389
+  [Ontology] Val acc after defense: 0.8820
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8820)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 1976 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.025, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3301, pruning 106/2115 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9453, pruning 106/2115 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2115 → 1916 edges (9.6% removed)
+  [GNNGUARD] Val acc after defense: 0.8701
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/2115 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5381
+  [Ontology] Val acc after defense: 0.8701
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8701)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 3506 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3142, pruning 192/3838 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9522, pruning 192/3838 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3838 → 3495 edges (9.5% removed)
+  [GNNGUARD] Val acc after defense: 0.8926
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/3838 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.4937
+  [Ontology] Val acc after defense: 0.8926
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8926)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4291 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.044, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3165, pruning 238/4755 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9425, pruning 238/4755 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4755 → 4293 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.8722
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/4755 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5753
+  [Ontology] Val acc after defense: 0.7111
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8722)
+    t=20  base=0.756  atk=0.711  def=0.806
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 3537 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.054, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3128, pruning 198/3959 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9444, pruning 198/3959 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3959 → 3594 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.8438
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/3959 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5995
+  [Ontology] Val acc after defense: 0.8438
+  [Recovery Boost] Both defenses below baseline (best=0.8438 < 0.8992). Retrying with stronger ontology config...
+  [Ontology] Suspicious edges: 1/3959 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 6-step diffusion: mean Δ‖x‖=4.9374
+  [Ontology-Boost] Val acc after defense: 0.8438
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8438)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 5894 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3211, pruning 351/7014 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9418, pruning 351/7014 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 7014 → 6334 edges (9.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9119
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/7014 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6725
+  [Ontology] Val acc after defense: 0.9119
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9119)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4165 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3191, pruning 230/4584 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9444, pruning 230/4584 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4584 → 4149 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.9576
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/4584 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5738
+  [Ontology] Val acc after defense: 0.9576
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9576)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4592 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3223, pruning 257/5124 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9486, pruning 257/5124 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5124 → 4662 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9330
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 4/5124 (0.1%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5855
+  [Ontology] Val acc after defense: 0.9375
+  [Defense Summary] Best defense: Ontology Self-Healing (val_acc=0.9375)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2314 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.083, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3281, pruning 131/2619 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9347, pruning 131/2619 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2619 → 2386 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9153
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/2619 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6946
+  [Ontology] Val acc after defense: 0.8051
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9153)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2523 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.019, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3231, pruning 135/2690 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9394, pruning 135/2690 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2690 → 2429 edges (10.0% removed)
+  [GNNGUARD] Val acc after defense: 0.8155
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 2/2690 (0.1%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6189
+  [Ontology] Val acc after defense: 0.8155
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8155)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 1089 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.047, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3357, pruning 59/1168 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9374, pruning 59/1168 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 1168 → 1057 edges (10.0% removed)
+  [GNNGUARD] Val acc after defense: 0.9000
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/1168 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6756
+  [Ontology] Val acc after defense: 0.9000
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9000)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 1653 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.190, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3311, pruning 86/1717 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9382, pruning 86/1717 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 1717 → 1562 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.9464
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/1717 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5983
+  [Ontology] Val acc after defense: 0.9464
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9464)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4275 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.038, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3393, pruning 227/4541 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9453, pruning 227/4541 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4541 → 4116 edges (9.6% removed)
+  [GNNGUARD] Val acc after defense: 0.8932
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/4541 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5917
+  [Ontology] Val acc after defense: 0.8547
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8932)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2483 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.009, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3219, pruning 128/2561 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9494, pruning 128/2561 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2561 → 2323 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.8462
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/2561 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.5248
+  [Ontology] Val acc after defense: 0.8462
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8462)
+    t=30  base=0.841  atk=0.832  def=0.832
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2816 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3295, pruning 153/3049 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9483, pruning 153/3049 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3049 → 2752 edges (10.0% removed)
+  [GNNGUARD] Val acc after defense: 0.8511
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/3049 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6338
+  [Ontology] Val acc after defense: 0.8511
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8511)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4525 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.019, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3283, pruning 248/4952 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9424, pruning 248/4952 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 4952 → 4497 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.7424
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/4952 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6303
+  [Ontology] Val acc after defense: 0.7424
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.7424)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 3151 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3312, pruning 169/3366 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9467, pruning 169/3366 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3366 → 3054 edges (9.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9540
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/3366 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6084
+  [Ontology] Val acc after defense: 0.9540
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9540)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2486 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.038, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3421, pruning 135/2692 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9453, pruning 135/2692 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2692 → 2446 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.9314
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/2692 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6335
+  [Ontology] Val acc after defense: 0.9314
+  [Recovery Boost] Both defenses below baseline (best=0.9314 < 0.9619). Retrying with stronger ontology config...
+  [Ontology] Suspicious edges: 0/2692 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 6-step diffusion: mean Δ‖x‖=4.9883
+  [Ontology-Boost] Val acc after defense: 0.9314
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9314)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 5507 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.019, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3426, pruning 318/6351 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9546, pruning 318/6351 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 6351 → 5743 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.8652
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/6351 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6254
+  [Ontology] Val acc after defense: 0.8652
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8652)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 6393 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3363, pruning 391/7813 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9518, pruning 391/7813 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 7813 → 7084 edges (9.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9824
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 2/7813 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.7067
+  [Ontology] Val acc after defense: 0.9824
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9824)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 3306 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.010, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3379, pruning 193/3849 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9438, pruning 193/3849 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3849 → 3478 edges (9.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9192
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/3849 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6884
+  [Ontology] Val acc after defense: 0.9192
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9192)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2891 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3504, pruning 155/3094 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9433, pruning 155/3094 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3094 → 2807 edges (9.9% removed)
+  [GNNGUARD] Val acc after defense: 0.8543
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/3094 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6495
+  [Ontology] Val acc after defense: 0.8543
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8543)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2760 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3613, pruning 146/2914 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9462, pruning 146/2914 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2914 → 2686 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.9322
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/2914 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6326
+  [Ontology] Val acc after defense: 0.9322
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9322)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4481 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3629, pruning 263/5246 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9461, pruning 263/5246 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5246 → 4742 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.9087
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/5246 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.7341
+  [Ontology] Val acc after defense: 0.9087
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9087)
     t=40  base=0.898  atk=0.906  def=0.906
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5342 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4276 | removed 578/6093 edges (9.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8982
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 7140 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4109 | removed 818/8493 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8907
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5063 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4346 | removed 570/5950 edges (9.6%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9853
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 4975 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4301 | removed 524/5551 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9874
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5598 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4216 | removed 656/6673 edges (9.8%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9959
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 3519 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4780 | removed 368/3866 edges (9.5%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9930
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 5121 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4367 | removed 543/5748 edges (9.4%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9762
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2954 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4225 | removed 237/3284 edges (7.2%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.9255
-  [Feature Perturbation] ε=0.45839279890060425, mode=uniform, perturbed 2454 nodes
-  [Defense Pipeline] Starting on feature_perturbation (damage=0.000)
-  [Edge Pruning] p10.0%→threshold=0.4542 | removed 238/2587 edges (9.2%)
-  [Defense] Damage 0.000 < threshold 0.05 — skipping feature smoothing + k-NN reconstruction
-  [Defense] Retraining model on defended graph...
-  [Defense] Defended val acc: 0.8842
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 5342 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3553, pruning 305/6093 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9518, pruning 305/6093 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 6093 → 5521 edges (9.9% removed)
+  [GNNGUARD] Val acc after defense: 0.8982
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/6093 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6521
+  [Ontology] Val acc after defense: 0.8982
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8982)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 7140 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3566, pruning 425/8493 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9533, pruning 425/8493 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 8493 → 7691 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.8907
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 1/8493 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.7152
+  [Ontology] Val acc after defense: 0.8907
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.8907)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 5063 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3636, pruning 298/5950 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9565, pruning 298/5950 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5950 → 5378 edges (9.8% removed)
+  [GNNGUARD] Val acc after defense: 0.9853
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/5950 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6605
+  [Ontology] Val acc after defense: 0.9853
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9853)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 4975 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3534, pruning 278/5551 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9557, pruning 278/5551 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5551 → 5024 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9874
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/5551 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6179
+  [Ontology] Val acc after defense: 0.9874
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9874)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 5598 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3669, pruning 334/6673 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9504, pruning 334/6673 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 6673 → 6029 edges (9.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9959
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/6673 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6959
+  [Ontology] Val acc after defense: 0.9959
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9959)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 3519 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3837, pruning 194/3866 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9487, pruning 194/3866 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3866 → 3494 edges (10.0% removed)
+  [GNNGUARD] Val acc after defense: 0.9930
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/3866 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6784
+  [Ontology] Val acc after defense: 0.9930
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9930)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 5121 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3722, pruning 288/5748 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9526, pruning 288/5748 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 5748 → 5191 edges (9.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9762
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/5748 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6394
+  [Ontology] Val acc after defense: 0.9762
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9762)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2954 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3678, pruning 165/3284 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9438, pruning 165/3284 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 3284 → 2971 edges (9.9% removed)
+  [GNNGUARD] Val acc after defense: 0.9255
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/3284 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6914
+  [Ontology] Val acc after defense: 0.9255
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9255)
+  [Feature Perturbation] ε=1.833571195602417, mode=uniform, perturbed 2454 nodes
+
+  [Defense Pipeline] feature_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=0.3678, pruning 130/2587 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.9472, pruning 130/2587 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 2587 → 2343 edges (9.7% removed)
+  [GNNGUARD] Val acc after defense: 0.9579
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 0/2587 (0.0%, threshold=0.2)
+  [Ontology] No significant vulnerability → Feature Denoising only
+  [Ontology] 3-step diffusion: mean Δ‖x‖=4.6489
+  [Ontology] Val acc after defense: 0.8842
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9579)
   [Viz] Saved → results/figures/temporal_feature_perturbation_elliptic.png
+
+  [temporal_perturbation] temporal lines …
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=3152, delta_src=synthetic (std × sign)
+
+  [Defense Pipeline] temporal_perturbation (damage=0.000, attack_type=evasion)
+  --- Defense 1: GNNGUARD ---
+  [GNNGUARD] Layer-0 (features): threshold=-0.1229, pruning 459/9164 edges
+  [GNNGUARD] Layer-1 (embeddings): threshold=0.3199, pruning 459/9164 edges
+  [GNNGUARD] Restored MST edges for connectivity
+  [GNNGUARD] Final: 9164 → 8309 edges (9.6% removed)
+  [GNNGUARD] Val acc after defense: 0.9930
+  --- Defense 2: Ontology Self-Healing ---
+  [Ontology] Suspicious edges: 6704/9164 (73.2%, threshold=0.2)
+  [Ontology] TopicMismatchVulnerability DETECTED → Filtering + Feature Denoising + Retraining
+  [Ontology] Filtering: 9164 → 6873 edges (25.0% removed)
+  [Ontology] Restored connectivity after filtering
+  [Ontology] Adaptive denoising: k=3 → 6 (ratio=73.2%)
+  [Ontology] 6-step diffusion: mean Δ‖x‖=24.1894
+  [Ontology] Val acc after defense: 0.9930
+  [Defense Summary] Best defense: GNNGUARD (val_acc=0.9930)
+    t= 1  base=0.658  atk=0.830  def=0.991
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1817, delta_src=temporal (X_t - X_{t-1}), n_ref=4544
+  [Temporal Perturbation] Mean natural drift of targets: 17.4385
+  [Temporal Ontology] Suspicious nodes: 981 (21.6%)  mean_drift=40.2606  max_drift=491.4738
+  [Temporal Ontology] Isolated 981 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=21.6%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2648, delta_src=temporal (X_t - X_{t-1}), n_ref=4544
+  [Temporal Perturbation] Mean natural drift of targets: 10.4745
+  [Temporal Ontology] Suspicious nodes: 1241 (27.3%)  mean_drift=36.5196  max_drift=303.1489
+  [Temporal Ontology] Isolated 1241 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=27.3%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2277, delta_src=temporal (X_t - X_{t-1}), n_ref=5693
+  [Temporal Perturbation] Mean natural drift of targets: 14.7507
+  [Temporal Ontology] Suspicious nodes: 1756 (30.8%)  mean_drift=34.5662  max_drift=312.5649
+  [Temporal Ontology] Isolated 1756 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=6 (drift_ratio=30.8%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2721, delta_src=temporal (X_t - X_{t-1}), n_ref=5693
+  [Temporal Perturbation] Mean natural drift of targets: 13.0106
+  [Temporal Ontology] Suspicious nodes: 1483 (26.0%)  mean_drift=36.0652  max_drift=294.9626
+  [Temporal Ontology] Isolated 1483 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=26.0%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1731, delta_src=temporal (X_t - X_{t-1}), n_ref=4328
+  [Temporal Perturbation] Mean natural drift of targets: 14.6229
+  [Temporal Ontology] Suspicious nodes: 1054 (24.4%)  mean_drift=35.2728  max_drift=390.8088
+  [Temporal Ontology] Isolated 1054 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=24.4%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2419, delta_src=temporal (X_t - X_{t-1}), n_ref=4328
+  [Temporal Perturbation] Mean natural drift of targets: 10.6508
+  [Temporal Ontology] Suspicious nodes: 1243 (28.7%)  mean_drift=34.9845  max_drift=357.1682
+  [Temporal Ontology] Isolated 1243 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=28.7%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1782, delta_src=temporal (X_t - X_{t-1}), n_ref=4457
+  [Temporal Perturbation] Mean natural drift of targets: 15.6461
+  [Temporal Ontology] Suspicious nodes: 961 (21.6%)  mean_drift=36.7235  max_drift=351.7821
+  [Temporal Ontology] Isolated 961 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=21.6%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1998, delta_src=temporal (X_t - X_{t-1}), n_ref=4457
+  [Temporal Perturbation] Mean natural drift of targets: 11.7908
+  [Temporal Ontology] Suspicious nodes: 1147 (25.7%)  mean_drift=32.0829  max_drift=255.5840
+  [Temporal Ontology] Isolated 1147 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=25.7%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2690, delta_src=temporal (X_t - X_{t-1}), n_ref=4996
+  [Temporal Perturbation] Mean natural drift of targets: 9.9102
+  [Temporal Ontology] Suspicious nodes: 1333 (26.7%)  mean_drift=31.4547  max_drift=400.5951
+  [Temporal Ontology] Isolated 1333 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=26.7%)
+    t=10  base=0.873  atk=0.893  def=0.970
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1718, delta_src=temporal (X_t - X_{t-1}), n_ref=4296
+  [Temporal Perturbation] Mean natural drift of targets: 13.5612
+  [Temporal Ontology] Suspicious nodes: 1097 (25.5%)  mean_drift=32.1041  max_drift=303.9034
+  [Temporal Ontology] Isolated 1097 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=25.5%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=818, delta_src=temporal (X_t - X_{t-1}), n_ref=2047
+  [Temporal Perturbation] Mean natural drift of targets: 15.5118
+  [Temporal Ontology] Suspicious nodes: 576 (28.1%)  mean_drift=34.9976  max_drift=281.8487
+  [Temporal Ontology] Isolated 576 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=28.1%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1811, delta_src=temporal (X_t - X_{t-1}), n_ref=2047
+  [Temporal Perturbation] Mean natural drift of targets: 6.7221
+  [Temporal Ontology] Suspicious nodes: 562 (27.5%)  mean_drift=34.9625  max_drift=408.8379
+  [Temporal Ontology] Isolated 562 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=27.5%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=808, delta_src=temporal (X_t - X_{t-1}), n_ref=2022
+  [Temporal Perturbation] Mean natural drift of targets: 12.6512
+  [Temporal Ontology] Suspicious nodes: 569 (28.1%)  mean_drift=29.9342  max_drift=219.7320
+  [Temporal Ontology] Isolated 569 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=28.1%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1455, delta_src=temporal (X_t - X_{t-1}), n_ref=2022
+  [Temporal Perturbation] Mean natural drift of targets: 7.1644
+  [Temporal Ontology] Suspicious nodes: 584 (28.9%)  mean_drift=30.0365  max_drift=361.0503
+  [Temporal Ontology] Isolated 584 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=28.9%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1190, delta_src=temporal (X_t - X_{t-1}), n_ref=2975
+  [Temporal Perturbation] Mean natural drift of targets: 12.2559
+  [Temporal Ontology] Suspicious nodes: 779 (26.2%)  mean_drift=28.6938  max_drift=311.2108
+  [Temporal Ontology] Isolated 779 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=26.2%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1354, delta_src=temporal (X_t - X_{t-1}), n_ref=2975
+  [Temporal Perturbation] Mean natural drift of targets: 12.1314
+  [Temporal Ontology] Suspicious nodes: 746 (25.1%)  mean_drift=32.4593  max_drift=412.3477
+  [Temporal Ontology] Isolated 746 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=25.1%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=790, delta_src=temporal (X_t - X_{t-1}), n_ref=1976
+  [Temporal Perturbation] Mean natural drift of targets: 14.9745
+  [Temporal Ontology] Suspicious nodes: 473 (23.9%)  mean_drift=34.9858  max_drift=292.2502
+  [Temporal Ontology] Isolated 473 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=23.9%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1402, delta_src=temporal (X_t - X_{t-1}), n_ref=1976
+  [Temporal Perturbation] Mean natural drift of targets: 8.7054
+  [Temporal Ontology] Suspicious nodes: 483 (24.4%)  mean_drift=36.6004  max_drift=375.7378
+  [Temporal Ontology] Isolated 483 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=24.4%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1716, delta_src=temporal (X_t - X_{t-1}), n_ref=3506
+  [Temporal Perturbation] Mean natural drift of targets: 11.5062
+  [Temporal Ontology] Suspicious nodes: 798 (22.8%)  mean_drift=33.8881  max_drift=313.0520
+  [Temporal Ontology] Isolated 798 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=22.8%)
+    t=20  base=0.756  atk=0.739  def=0.800
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1414, delta_src=temporal (X_t - X_{t-1}), n_ref=3537
+  [Temporal Perturbation] Mean natural drift of targets: 12.7592
+  [Temporal Ontology] Suspicious nodes: 908 (25.7%)  mean_drift=30.0431  max_drift=245.8938
+  [Temporal Ontology] Isolated 908 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=25.7%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2357, delta_src=temporal (X_t - X_{t-1}), n_ref=3537
+  [Temporal Perturbation] Mean natural drift of targets: 9.4474
+  [Temporal Ontology] Suspicious nodes: 635 (18.0%)  mean_drift=36.4668  max_drift=406.9885
+  [Temporal Ontology] Isolated 635 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=18.0%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1666, delta_src=temporal (X_t - X_{t-1}), n_ref=4165
+  [Temporal Perturbation] Mean natural drift of targets: 17.0367
+  [Temporal Ontology] Suspicious nodes: 677 (16.3%)  mean_drift=39.9445  max_drift=310.0752
+  [Temporal Ontology] Isolated 677 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=16.3%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1836, delta_src=temporal (X_t - X_{t-1}), n_ref=4165
+  [Temporal Perturbation] Mean natural drift of targets: 15.2816
+  [Temporal Ontology] Suspicious nodes: 590 (14.2%)  mean_drift=39.6750  max_drift=447.4239
+  [Temporal Ontology] Isolated 590 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=14.2%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=925, delta_src=temporal (X_t - X_{t-1}), n_ref=2314
+  [Temporal Perturbation] Mean natural drift of targets: 16.6424
+  [Temporal Ontology] Suspicious nodes: 368 (15.9%)  mean_drift=38.2330  max_drift=352.9195
+  [Temporal Ontology] Isolated 368 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=15.9%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1009, delta_src=temporal (X_t - X_{t-1}), n_ref=2314
+  [Temporal Perturbation] Mean natural drift of targets: 12.6770
+  [Temporal Ontology] Suspicious nodes: 534 (23.1%)  mean_drift=32.6938  max_drift=484.2837
+  [Temporal Ontology] Isolated 534 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=23.1%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=435, delta_src=temporal (X_t - X_{t-1}), n_ref=1089
+  [Temporal Perturbation] Mean natural drift of targets: 12.8006
+  [Temporal Ontology] Suspicious nodes: 256 (23.5%)  mean_drift=31.0954  max_drift=188.2047
+  [Temporal Ontology] Isolated 256 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=23.5%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=661, delta_src=temporal (X_t - X_{t-1}), n_ref=1089
+  [Temporal Perturbation] Mean natural drift of targets: 9.8925
+  [Temporal Ontology] Suspicious nodes: 208 (19.1%)  mean_drift=34.7665  max_drift=891.0986
+  [Temporal Ontology] Isolated 208 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=19.1%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1710, delta_src=temporal (X_t - X_{t-1}), n_ref=1653
+  [Temporal Perturbation] Mean natural drift of targets: 6.8905
+  [Temporal Ontology] Suspicious nodes: 309 (18.7%)  mean_drift=41.0756  max_drift=554.5892
+  [Temporal Ontology] Isolated 309 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=18.7%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=993, delta_src=temporal (X_t - X_{t-1}), n_ref=2483
+  [Temporal Perturbation] Mean natural drift of targets: 17.5076
+  [Temporal Ontology] Suspicious nodes: 418 (16.8%)  mean_drift=40.2244  max_drift=454.2947
+  [Temporal Ontology] Isolated 418 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=16.8%)
+    t=30  base=0.841  atk=0.822  def=0.888
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1126, delta_src=temporal (X_t - X_{t-1}), n_ref=2483
+  [Temporal Perturbation] Mean natural drift of targets: 12.3742
+  [Temporal Ontology] Suspicious nodes: 403 (16.2%)  mean_drift=33.7925  max_drift=315.5907
+  [Temporal Ontology] Isolated 403 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=16.2%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1810, delta_src=temporal (X_t - X_{t-1}), n_ref=2816
+  [Temporal Perturbation] Mean natural drift of targets: 8.8003
+  [Temporal Ontology] Suspicious nodes: 538 (19.1%)  mean_drift=33.4014  max_drift=657.9858
+  [Temporal Ontology] Isolated 538 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=19.1%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1260, delta_src=temporal (X_t - X_{t-1}), n_ref=3151
+  [Temporal Perturbation] Mean natural drift of targets: 12.3709
+  [Temporal Ontology] Suspicious nodes: 832 (26.4%)  mean_drift=29.1002  max_drift=523.1403
+  [Temporal Ontology] Isolated 832 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=26.4%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=994, delta_src=temporal (X_t - X_{t-1}), n_ref=2486
+  [Temporal Perturbation] Mean natural drift of targets: 12.5344
+  [Temporal Ontology] Suspicious nodes: 552 (22.2%)  mean_drift=29.6370  max_drift=557.3863
+  [Temporal Ontology] Isolated 552 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=22.2%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2202, delta_src=temporal (X_t - X_{t-1}), n_ref=2486
+  [Temporal Perturbation] Mean natural drift of targets: 6.6135
+  [Temporal Ontology] Suspicious nodes: 495 (19.9%)  mean_drift=33.5144  max_drift=1634.4219
+  [Temporal Ontology] Isolated 495 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=19.9%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2557, delta_src=temporal (X_t - X_{t-1}), n_ref=5507
+  [Temporal Perturbation] Mean natural drift of targets: 11.7609
+  [Temporal Ontology] Suspicious nodes: 1087 (19.7%)  mean_drift=32.0849  max_drift=1091.6575
+  [Temporal Ontology] Isolated 1087 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=19.7%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1322, delta_src=temporal (X_t - X_{t-1}), n_ref=3306
+  [Temporal Perturbation] Mean natural drift of targets: 14.3143
+  [Temporal Ontology] Suspicious nodes: 667 (20.2%)  mean_drift=33.6299  max_drift=426.7919
+  [Temporal Ontology] Isolated 667 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=20.2%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1156, delta_src=temporal (X_t - X_{t-1}), n_ref=2891
+  [Temporal Perturbation] Mean natural drift of targets: 14.3341
+  [Temporal Ontology] Suspicious nodes: 627 (21.7%)  mean_drift=33.7681  max_drift=412.4332
+  [Temporal Ontology] Isolated 627 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=21.7%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1104, delta_src=temporal (X_t - X_{t-1}), n_ref=2760
+  [Temporal Perturbation] Mean natural drift of targets: 16.2563
+  [Temporal Ontology] Suspicious nodes: 604 (21.9%)  mean_drift=37.1353  max_drift=428.6790
+  [Temporal Ontology] Isolated 604 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=21.9%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1792, delta_src=temporal (X_t - X_{t-1}), n_ref=2760
+  [Temporal Perturbation] Mean natural drift of targets: 11.3663
+  [Temporal Ontology] Suspicious nodes: 551 (20.0%)  mean_drift=41.9100  max_drift=290.6171
+  [Temporal Ontology] Isolated 551 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=20.0%)
+    t=40  base=0.898  atk=0.881  def=0.930
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2136, delta_src=temporal (X_t - X_{t-1}), n_ref=4481
+  [Temporal Perturbation] Mean natural drift of targets: 13.4550
+  [Temporal Ontology] Suspicious nodes: 743 (16.6%)  mean_drift=37.7978  max_drift=294.4946
+  [Temporal Ontology] Isolated 743 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=16.6%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2856, delta_src=temporal (X_t - X_{t-1}), n_ref=5342
+  [Temporal Perturbation] Mean natural drift of targets: 10.2953
+  [Temporal Ontology] Suspicious nodes: 1180 (22.1%)  mean_drift=32.6430  max_drift=333.5447
+  [Temporal Ontology] Isolated 1180 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=22.1%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2025, delta_src=temporal (X_t - X_{t-1}), n_ref=5063
+  [Temporal Perturbation] Mean natural drift of targets: 15.1691
+  [Temporal Ontology] Suspicious nodes: 1337 (26.4%)  mean_drift=36.2551  max_drift=485.9267
+  [Temporal Ontology] Isolated 1337 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=26.4%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1990, delta_src=temporal (X_t - X_{t-1}), n_ref=4975
+  [Temporal Perturbation] Mean natural drift of targets: 14.4333
+  [Temporal Ontology] Suspicious nodes: 1214 (24.4%)  mean_drift=34.3493  max_drift=322.6459
+  [Temporal Ontology] Isolated 1214 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=24.4%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2239, delta_src=temporal (X_t - X_{t-1}), n_ref=4975
+  [Temporal Perturbation] Mean natural drift of targets: 13.2776
+  [Temporal Ontology] Suspicious nodes: 807 (16.2%)  mean_drift=35.9104  max_drift=421.8615
+  [Temporal Ontology] Isolated 807 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=16.2%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1407, delta_src=temporal (X_t - X_{t-1}), n_ref=3519
+  [Temporal Perturbation] Mean natural drift of targets: 16.6278
+  [Temporal Ontology] Suspicious nodes: 590 (16.8%)  mean_drift=39.1340  max_drift=555.3519
+  [Temporal Ontology] Isolated 590 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=16.8%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=2048, delta_src=temporal (X_t - X_{t-1}), n_ref=3519
+  [Temporal Perturbation] Mean natural drift of targets: 10.7685
+  [Temporal Ontology] Suspicious nodes: 657 (18.7%)  mean_drift=37.0890  max_drift=579.5616
+  [Temporal Ontology] Isolated 657 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=18.7%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=1181, delta_src=temporal (X_t - X_{t-1}), n_ref=2954
+  [Temporal Perturbation] Mean natural drift of targets: 14.7149
+  [Temporal Ontology] Suspicious nodes: 538 (18.2%)  mean_drift=35.2730  max_drift=589.9563
+  [Temporal Ontology] Isolated 538 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=4 (drift_ratio=18.2%)
+  [Temporal Perturbation] ε=3.667142391204834, fraction=40%, n_attacked=981, delta_src=temporal (X_t - X_{t-1}), n_ref=2454
+  [Temporal Perturbation] Mean natural drift of targets: 14.2912
+  [Temporal Ontology] Suspicious nodes: 515 (21.0%)  mean_drift=34.2813  max_drift=380.4696
+  [Temporal Ontology] Isolated 515 suspicious nodes from neighborhood aggregation
+  [Temporal Ontology] Adaptive denoising k=5 (drift_ratio=21.0%)
+  [Viz] Saved → results/figures/temporal_temporal_perturbation_elliptic.png
   [Viz] Saved → results/figures/accuracy_bar_elliptic.png
   [Tables] Saved → results/tables/elliptic_results.md
 
-  Phase 7 done in 6m 10s
+  Phase 7 done in 11m 18s
 
 ============================================================
-Total runtime: 6m 50s
+Total runtime: 124m 13s
 All outputs → results
 ============================================================

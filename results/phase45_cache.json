@@ -1,108 +1,126 @@
 {
   "attack_accs": {
-    "nettack": 0.778,
-    "dice": 0.748,
-    "meta_attack": 0.799,
-    "random_structure": 0.754,
+    "nettack": 0.681,
+    "dice": 0.698,
+    "meta_attack": 0.787,
+    "random_structure": 0.728,
     "feature_perturbation": 0.419,
-    "edge_flip": 0.736,
+    "edge_flip": 0.636,
     "gradient_attack": 0.0
   },
   "defended_accs": {
-    "nettack": 0.775,
-    "dice": 0.734,
-    "meta_attack": 0.791,
-    "random_structure": 0.73,
-    "feature_perturbation": 0.739,
-    "edge_flip": 0.729,
-    "gradient_attack": 0.921
+    "nettack": 0.677,
+    "dice": 0.707,
+    "meta_attack": 0.784,
+    "random_structure": 0.731,
+    "feature_perturbation": 0.773,
+    "edge_flip": 0.638,
+    "gradient_attack": 0.907
   },
   "attack_metrics": {
     "nettack": {
-      "accuracy": 0.778,
-      "f1": 0.7685,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.681,
+      "precision": 0.6333244680920621,
+      "recall": 0.6458070082476156,
+      "f1": 0.6369779917186342
     },
     "dice": {
-      "accuracy": 0.748,
-      "f1": 0.7442,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.698,
+      "precision": 0.6812817819074976,
+      "recall": 0.7058068207049363,
+      "f1": 0.6866013693796872
     },
     "meta_attack": {
-      "accuracy": 0.799,
-      "f1": 0.7924,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.787,
+      "precision": 0.7660867773710036,
+      "recall": 0.8037799189439448,
+      "f1": 0.7809754030544239
     },
     "random_structure": {
-      "accuracy": 0.754,
-      "f1": 0.7473,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.728,
+      "precision": 0.7038668432726117,
+      "recall": 0.7426447979810982,
+      "f1": 0.7175850048752614
     },
     "feature_perturbation": {
       "accuracy": 0.419,
-      "f1": 0.1784,
-      "precision": 0.0,
-      "recall": 0.0
+      "precision": 0.25735973778824506,
+      "recall": 0.26778730539434076,
+      "f1": 0.178369117953256
     },
     "edge_flip": {
-      "accuracy": 0.736,
-      "f1": 0.7248,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.636,
+      "precision": 0.6163122312334146,
+      "recall": 0.6619116006470528,
+      "f1": 0.6320079507597883
     },
     "gradient_attack": {
       "accuracy": 0.0,
-      "f1": 0.0,
       "precision": 0.0,
-      "recall": 0.0
+      "recall": 0.0,
+      "f1": 0.0
     }
   },
   "defended_metrics": {
     "nettack": {
-      "accuracy": 0.775,
-      "f1": 0.7666,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.677,
+      "precision": 0.6463560786258762,
+      "recall": 0.6597035116489415,
+      "f1": 0.6495151724483799
     },
     "dice": {
-      "accuracy": 0.734,
-      "f1": 0.729,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.707,
+      "precision": 0.6879283873690083,
+      "recall": 0.7060877502138576,
+      "f1": 0.6904874314592183
     },
     "meta_attack": {
-      "accuracy": 0.791,
-      "f1": 0.783,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.784,
+      "precision": 0.758930184537033,
+      "recall": 0.8012363712729978,
+      "f1": 0.7747997630983239
     },
     "random_structure": {
-      "accuracy": 0.73,
-      "f1": 0.719,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.731,
+      "precision": 0.7075704802314762,
+      "recall": 0.7404932111449914,
+      "f1": 0.7194269726613933
     },
     "feature_perturbation": {
-      "accuracy": 0.739,
-      "f1": 0.7426,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.773,
+      "precision": 0.7641989470477843,
+      "recall": 0.76558736824707,
+      "f1": 0.7559765275135717
     },
     "edge_flip": {
-      "accuracy": 0.729,
-      "f1": 0.7232,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.638,
+      "precision": 0.6222114403808001,
+      "recall": 0.6501687442543388,
+      "f1": 0.6299505304895823
     },
     "gradient_attack": {
-      "accuracy": 0.921,
-      "f1": 0.9123,
-      "precision": 0.0,
-      "recall": 0.0
+      "accuracy": 0.907,
+      "precision": 0.9031353870060145,
+      "recall": 0.8931674608495433,
+      "f1": 0.8971446440503975
     }
+  },
+  "defended_accs_gnnguard": {
+    "nettack": 0.665,
+    "dice": 0.707,
+    "meta_attack": 0.784,
+    "random_structure": 0.731,
+    "feature_perturbation": 0.721,
+    "edge_flip": 0.614,
+    "gradient_attack": 0.907
+  },
+  "defended_accs_ontology": {
+    "nettack": 0.677,
+    "dice": 0.676,
+    "meta_attack": 0.76,
+    "random_structure": 0.671,
+    "feature_perturbation": 0.773,
+    "edge_flip": 0.638,
+    "gradient_attack": 0.87
   }
 }

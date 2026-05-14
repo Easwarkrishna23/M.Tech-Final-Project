@@ -1,13 +1,21 @@
 """
 Edge Flip Attack — evasion attack at test time.
 
-Flips edges in the neighbourhood of test nodes.
-Two strategies:
-  'random'    — uniformly random edge flips near test nodes
-  'degree'    — preferentially target high-degree test nodes (disrupts
-                hub nodes whose neighbourhoods influence many predictions)
+Enhanced strategy (bridge-node targeting):
+  'random'    — uniformly random edge flips near test nodes (baseline)
+  'degree'    — prefer high-degree test nodes (existing behaviour)
+  'bridge'    — rank test nodes by betweenness centrality; attack highest-
+                betweenness test nodes first. Bridge-position test nodes sit
+                on many shortest paths — removing/flipping their edges causes
+                the maximum disruption to information flow at inference time.
+
+Why betweenness beats degree:
+  Degree counts local connections; betweenness measures global influence.
+  A degree-10 bridge node may control information between two large communities,
+  while a degree-30 hub in a clique affects only its immediate cluster.
 """
 import numpy as np
+import networkx as nx
 from datasets.cora_loader import GraphData
 from attacks.base import AttackResult, edge_budget, diff_edges
 from utils.graph_utils import normalize_adjacency
@@ -15,8 +23,8 @@ from utils.graph_utils import normalize_adjacency
 
 def edge_flip_attack(
     graph: GraphData,
-    budget_ratio: float = 0.05,
-    strategy: str = "random",
+    budget_ratio: float = 0.35,
+    strategy: str = "bridge",
     seed: int = 42,
 ) -> AttackResult:
     """
@@ -25,7 +33,7 @@ def edge_flip_attack(
     Args:
         graph:         Clean GraphData.
         budget_ratio:  Fraction of total edges to flip.
-        strategy:      'random' or 'degree'.
+        strategy:      'random', 'degree', or 'bridge'.
         seed:          RNG seed.
 
     Returns:
@@ -37,9 +45,15 @@ def edge_flip_attack(
     budget = edge_budget(adj, budget_ratio)
     test_nodes = np.where(graph.test_mask)[0]
 
-    if strategy == "degree":
+    if strategy == "bridge":
+        G  = nx.from_numpy_array(adj)
+        print(f"  [Edge Flip] Computing betweenness centrality (approx, k=300)...")
+        bc = nx.betweenness_centrality(G, k=min(300, n), normalized=True, seed=int(seed))
+        bc_test = np.array([bc[v] for v in test_nodes])
+        ordered = test_nodes[np.argsort(-bc_test)]   # high-betweenness first
+        print(f"  [Edge Flip] Bridge strategy: top bc={bc_test.max():.4f}")
+    elif strategy == "degree":
         degrees = adj.sum(axis=1)[test_nodes]
-        probs   = degrees / degrees.sum()
         ordered = test_nodes[np.argsort(-degrees)]   # high-degree first
     else:
         ordered = rng.permutation(test_nodes)
@@ -51,21 +65,31 @@ def edge_flip_attack(
         if flipped >= budget:
             break
 
-        # Candidates: all edges and non-edges incident to v
         neighbors     = np.where(adj[v] > 0)[0]
         non_neighbors = np.where(adj[v] == 0)[0]
         non_neighbors = non_neighbors[non_neighbors != v]
 
-        # Remove one existing edge (if any)
+        # Remove one existing edge
         if len(neighbors) > 0 and flipped < budget:
             nb = rng.choice(neighbors)
             adj[v, nb] = 0.0
             adj[nb, v] = 0.0
             flipped += 1
 
-        # Add one new edge (if any non-neighbors remain)
+        # Add one new cross-class edge (adversarial structural bottleneck bias).
+        # Inserting a cross-class edge at a bridge node injects maximum
+        # cross-class noise at a high-leverage position in the graph.
         if len(non_neighbors) > 0 and flipped < budget:
-            nb = rng.choice(non_neighbors)
+            v_label = int(graph.labels[v]) if graph.labels is not None else -1
+            if v_label >= 0:
+                cross = non_neighbors[
+                    (graph.labels[non_neighbors] != v_label) &
+                    (graph.labels[non_neighbors] >= 0)
+                ]
+                pool = cross if len(cross) > 0 else non_neighbors
+            else:
+                pool = non_neighbors
+            nb = rng.choice(pool)
             adj[v, nb] = 1.0
             adj[nb, v] = 1.0
             flipped += 1

@@ -7,5 +7,6 @@
 
 | Attack | After Attack | After Defense | Recovery Rate |
 | --- | --- | --- | --- |
-| gradient_attack | 0.8750 | 0.9896 | N/A |
-| feature_perturbation | 0.8750 | 0.8750 | N/A |
+| gradient_attack | 0.8646 | 0.9583 | N/A |
+| feature_perturbation | 0.8750 | 0.9271 | N/A |
+| temporal_perturbation | 0.8646 | 0.8958 | N/A |
